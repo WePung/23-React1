@@ -3,7 +3,7 @@
 대림대학교 컴퓨터정보학부 3학년 1반 리엑트 수업
 
 ---
-## GitHub 2023sus 3월 30일
+## GitHub 2023년 3월 30일
 
 ## 엘리먼트 렌더링
 
@@ -133,6 +133,241 @@ setInterval(tick, 1000);
 - 컴포넌트에 어떤 속성, props를 넣느냐에 따라서 속성이 다른 엘리먼Props는 컴포넌트에 전달 할 다양한 정보를 담고 있는 자바스크립트 객체임트가 출력 됨
   
 #### 2. Props의 특징
+
+- 읽기전용(변경할 수 없음)
+- 속성이 다른 엘리먼트를 생성하려면 새로운 props를 컴포넌트에 전달하면 됨
+
+#### Pure 함수 vs Impure함수
+
+- Pure함수는 인수로 받은 정보가 함수 내부에서도 변하지 않는 함수
+- Impure함수는 인수로 받은 정보가 함수 내부에서 변하는 함수
+
+```js
+// pure함수
+function sum (a, b){
+  return a + b;
+}
+```
+
+```js
+// impure함수
+function withdraw(account, amount){
+  account.total -= amount;
+}
+```
+#### 4. Props 사용법
+
+- JSX에서는 key-value쌍으로 props를 구성함
+
+```js
+funciton App(props){
+  return(
+    <Profle
+    name = "소플"
+    introduction = "안녕하세요"
+    viewCount = {1500}
+    >
+    </Profile>
+  );
+}
+```
+- 위의 코드는 App컴포넌트에서 props를 인자로 받음
+- 내부의 Profile컴포넌트로 전달해서 name, introduction, viewCount에 각각 속성을 할당함
+- 이 때 전달되는 props는 다음과 같은 자바스크립트 객체임
+
+```js
+{
+  name : "소플",
+  introduction = "안녕하세요",
+  viewCount : 1500
+}
+```
+
+- JSX에서는 중괄호를 사용하면 JS코드를 넣을 수 있다고 배움
+- 다음 코드처럼 props를 통해서 value를 할당 할 수도 있고, 직접 중괄호를 사용하여 할당할 수 도 있음
+
+```js
+funciotn App(Props){
+  return(
+    <Layout
+      with={2560}
+      height={1440}
+      header={
+        <Header title = "소플의 블로그" />
+      }
+      footer = {
+        <Footer />
+      }
+    />
+  );
+};
+```
+
+- JSX를 사용하지 않는 경우 props의 전달 방법은 createElemnet()함수를 사용하는 것
+
+```js
+React.createElemet(
+  type,
+  [props],
+  [...children]
+)
+```
+
+- createElemnet()함수의 두 번째 매개변수가 바로 props임
+- JSX를 사용하지 않으면 다음과 같이 코드를 작성 할 수 있음
+
+```js
+React.createElement(
+  Profile,
+  {
+   name : "소플",
+  introduction = "안녕하세요",
+  viewCount : 1500 
+  },
+  null
+);
+```
+
+---
+### 컴포넌트 만들기
+
+#### 1. 컴포넌트의 종류
+
+- 리액트의 초기버전을 사용할 때는 클래스형 컴포넌트를 주로 사용
+- 이후 Hook이라는 개념이 나오면서 최근에는 함수형 컴포넌트를 주로 사용함
+- 예전에 작성된 코드나 anstjemfd l클래스형 컴포넌트를 사용하고 있기 때문에 클래스 형 컴포넌트와 컴포넌트의 생명주기에 관해서 공부해두어야 함
+
+#### 2. 함수형 컴포넌트
+
+- Welcome컴포넌트는 props를 받아, 받은 props중 name키의 값을 "안녕”뒤에 넣어 반환
+
+```js
+function Welecome(props){
+  return <h1>안녕, {props.name}</h1>
+}
+```
+
+#### 3. 클래스형 컴포넌트
+
+- Welcome컴포넌트는 React.Componet class로부터 상속을 받아 선언
+
+```js
+clss Welcome extends React.Componet{
+  render(){
+    return <h1>안녕, {this.props.name}</h1>
+  }
+}
+```
+
+#### 4. 컴포넌트 이름 짓기
+
+- 이름은 항상 대문자로 시작
+- 왜냐하면 리액트는 소문자로 시작하는 컴포넌트를 DOM태그로 인식하기 때문 html tag.
+- 컴포넌트 파일 이름과 컴포넌트 이름은 같게 함
+
+#### 5. 컴포넌트 렌더링
+
+- 렌더링의 과정은 다음 코드와 같음
+
+```js
+function Welcome(props){
+    return <h1>안녕, {this.props.name}</h1>
+}
+
+const element = <Welcome name = "인제" />;
+ReactDOM.render(
+  elemnet,
+  document.getElementById('root')
+);
+```
+---
+### 컴포넌트 합성
+
+- 컴포넌트 합성은 여러 개의 컴포넌트를 합쳐서 하나의 컴포넌트를 만드는 것임
+- 리액트에서는 컴포넌트 안에 또 다른 사용할 수 있기 때문에 복잡한 화면을 여러 개의 컴포넌트로 나누어 구현할 수 있음
+- 다음 코드에서는 props의 값을 다르게 해서 Welcome컴포넌트를 여러 번 사용함
+
+```js
+function Welecome(props){
+  return <h1>Hello, {props.nmae}</h1>
+}
+function App(props){
+  return(
+    <div>
+      <Welcome name = "Mike" />
+      <Welcome name = "Steve" />
+      <Welcome name = "Jane" />
+    </div>
+  )
+}
+ReactDOM.render(
+  <App />
+  document.getElemnetById('root')
+);
+```
+---
+### 컴포넌트 추출
+
+- 복잡한 컴포넌트를 쪼개서 여러 개의 컴포넌트로 나눌 수 있음
+- 큰 컴포넌트에서 일부를 추출해서 새로운 컴포넌트를 만들 것임
+- 실무에서는 처음부터 1개의 컴포넌트에 하나의 기능만 사용하도록 설계하는 것이 좋음
+- Comments는 댓글 표시 컴포넌트임
+- 내부에는 이미지, 이름, 댓글과 작성일이 포함되어 있음
+- 첫 번째로 이미지 부분을 Avatar컴포넌트로 추출해 보겠음
+
+```js
+function Avatar(props){
+  return(
+    <img className = "avatar"
+    src = {props.uer.avatarUrl}
+    alt = {props.user.name}
+    />
+  );
+}
+```
+
+```js
+function Commnet(props){
+  return(
+    <Avatar user = {props.author} />
+    <div className = "Comment">
+    <div className = "user-info">
+      <img className = "avatar"
+        src = {props.uer.avatarUrl}
+        alt = {props.user.name}
+      />
+      <div className = "user-info-name">
+        {props.author.name}
+      </div>
+    </div>
+
+    <div className = "commnet-text">
+      {props.text}
+    </div>
+      <div className = "commnet-data">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
+}
+```
+
+- 두 번째로 사용자 정보 부분을 추출함
+- 컴포넌트 이름은 UseInfo로 함. React컴포넌트 이름은 Camel Notatio을 사용
+- UserInfo안에 Avatar컴포넌트를 넣어서 완성
+
+```js
+function UserInfo(props){
+  return(
+    <div className="user-info">
+      <Avatar user = {props.user} />
+      <div className ="user-info-name">
+        {pros.user.name}
+      </div>
+    </div>
+  );
+}
+```
 
 ---
 
