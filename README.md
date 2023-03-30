@@ -3,6 +3,373 @@
 대림대학교 컴퓨터정보학부 3학년 1반 리엑트 수업
 
 ---
+## GitHub 2023년 3월 30일
+
+## 엘리먼트 렌더링
+
+### 엘리먼트에 대해 알아보자
+
+### 1. 엘리먼트의 정의
+
+- 엘리먼트는 리액트 앱을 구성하는 요소를 의미
+- 공식페이지에는 엘리먼트는 리랙트 앱의 가장 작은 빌딩 블록들 이라고 설명함
+- 웹 사이트의 경우 DOM 엘리먼트이며 HTML요소를 의미함
+
+#### 그렇다면 엘리먼트와 DOM엘리먼트는 어떤 차이가 있을까?
+
+- 리액트 엘리먼트는 Virtual DOM의 형태를 취하고 있음
+- DOM엘리먼트는 페이지의 모든 정보를 갖고있어 무거움
+- 반면 리액트 엘리먼트는 변화한 부부만 갖고있어 가벼움
+
+||DOM| Virtual DOM|
+|------|---|---|
+|업데이트 속도|느리다|빠르다|
+|element 업데이트 방식|DOM 전체를 업데이트|변화 부분을 가상 DOM으로 만든 후 DOM과 비교하여 다른 부분만 업데이트|
+|메모리|낭비가 심함|효율적|
+### 2. 엘리먼트의 생김새
+
+- 리랙트 엘리먼트는 자바스크립트 객체의 형태로 존재
+- 컴포넌트(Button등), 속성(color등) 및 내부의 모든 Children을 포함하는 일반 js객체이다
+- 이 객체는 마음대로 변경할 수 없는 불변성을 갖고 있음
+- 버튼을 나타내기 위한 엘리먼트의 예를 보겠음
+- type에는 html태그 이름, props에는 속성을 나타냄
+
+```jsx
+{
+  type: Button,
+  props:{
+    clolor: 'green',
+    children: "Hello, elemnet!"
+  }
+}
+```
+- 내부적으로 자바스크립트 객체를 만드는 역할을 하는 함수가 createElement()임
+- 첫 번째 매개변수가 type임. 이 곳에 태그가 들어가면 그대로 표현하고, 만일 리액트 컴포넌트가 들어가면 이 것을 분해해 결국 태그로 만들게 됨
+- 두 번째 매개변수인 props는 속성을 나타냄
+- 세 번째 매개변수는 children임. 자식 태그라고 이해하면 됨
+
+### 3. 엘리먼트의 특징
+
+- 리액트 엘리먼트의 가장 큰 특징은 불변성
+- 즉 한 번 생성된 엘리먼트의 children이나 속성(attributes)을 바꿀 수 없음
+
+#### 만일 내용이 바뀌면 어떻게 해야할까
+
+- 이 때는 컴포넌트를 통해 새로운 엘리먼트를 생성하면 됨
+- 그 다음 이전 엘리먼트와 교체를 하는 방법으로 내용을 바꾸는 것임
+- 이렇게 교체하는 작업을 하기위해 Virtual DOM을 사용함
+
+---
+
+### 엘리먼트 렌더링하기
+
+#### Root DOM node
+
+- 다음 html코드는 id값이 root인 div 태그로 단순하지만 리액트에 필수로 들어가는 아주 중ㄴ요한 코드임
+- 이 div태그 안에 리액트 엘리먼트가 렌더링 되며 이 것을 Root DOM node라고 함
+
+```html
+<div id = "root"></div>
+```
+
+- 엘리먼트를 렌더링하기 위해서는 다음과 같은 코드가 필요함
+
+```jsx
+const elemnt = <h1>안녕, 리액트!</h1>
+ReactDOM.render(element, document.getElementById('root'));
+```
+
+- 이때 render()함수를 사용하게 됨
+- 이 함수의 첫 번째 파라메터 출력할 리액트 엘리먼트이고, 두 번째 파라메터는 출력할 타겟을 나타냄
+- 즉 리액트 렌더링의 과정은 Virtual DOM에서 실제 DOM으로 이동하는 과정이라고 할 수 있음
+- 결국 1초에 한번씩 element를 새로 만들고 그것을 교체하는 것임
+- 다음 코드를 실행하고 크롬 개발자 도구에서 확인해 보면 시간 부분만 업데이트 되는 것을 확인 할 수 있음
+
+---
+
+### 렌더링 된 엘리먼트 업데이트하기
+
+- 다음 코드는 tick()함수를 정의하고 있음
+- 이 함수는 현재 시간을 포함한 element를 생성해서 root div에 렌더링해 줌
+- 그런데 라인 12에 보면 setInterval()함수를 이용해서 위에서 정의한 tick()를 1초에 한번씩 호출 하고 있음
+- 결국 1초에 한번씩 element를 새로 만들고 그것을 교체하는 것임
+- 다음 코드를 실행하고 크롬 개발자 도구에서 확인해 보면 시간 부분만 업데이트 되는 것을 확인 할 수 있음
+
+```js
+function tick(){
+  console.log("1");
+  const element = (
+    <div>
+      <h1>안녕, 리액트!</h1>
+      <h2>현재 시간: {new Date().toLocaleTimeString()}</h2>
+    </div>
+  )
+  ReactDOM.render(element, document.getElementById('root'));
+}
+
+setInterval(tick, 1000);
+```
+
+---
+
+## 컴포넌트
+
+### 컴포넌트에 대해 알아보기
+
+- 2장에서 설명한 바와 같이 리액트는 컴포넌트 기반의 구조를 가짐
+- 컴포넌트 구조라는 것은 작은 컴포넌트를 구성하고 다시 이런 컴포넌트들이 모여서 전체 페이지를 구성한다는 것을 의미
+- 컴포넌트 재사용이 가능하기 때문에 전체 코드의 양을 줄일 수 있어 개발 시간과 유지 보수 비용도 줄일 수 있음
+- 컴포넌트는 자바스크립트 함수와 입력과 출력이 있다는 면에서 유사함
+- 다만 입력과 출력은 입력은 Props가 담당하고 출력은 리액트 엘리먼트의 형태로 출력 됨
+- 엘리먼트를 필요한 만큼 만들어 사용한다는 면에서는 객체 지향의 개념과 비슷함
+---
+
+### Props에 대해서 알아보기
+
+#### 1.Props의 개념
+
+- Props는 prop(property:속성, 특징)의 준말
+- 이 props가 바로 컴포넌트의 속성
+- 컴포넌트에 어떤 속성, props를 넣느냐에 따라서 속성이 다른 엘리먼Props는 컴포넌트에 전달 할 다양한 정보를 담고 있는 자바스크립트 객체임트가 출력 됨
+  
+#### 2. Props의 특징
+
+- 읽기전용(변경할 수 없음)
+- 속성이 다른 엘리먼트를 생성하려면 새로운 props를 컴포넌트에 전달하면 됨
+
+#### Pure 함수 vs Impure함수
+
+- Pure함수는 인수로 받은 정보가 함수 내부에서도 변하지 않는 함수
+- Impure함수는 인수로 받은 정보가 함수 내부에서 변하는 함수
+
+```js
+// pure함수
+function sum (a, b){
+  return a + b;
+}
+```
+
+```js
+// impure함수
+function withdraw(account, amount){
+  account.total -= amount;
+}
+```
+#### 4. Props 사용법
+
+- JSX에서는 key-value쌍으로 props를 구성함
+
+```js
+funciton App(props){
+  return(
+    <Profle
+    name = "소플"
+    introduction = "안녕하세요"
+    viewCount = {1500}
+    >
+    </Profile>
+  );
+}
+```
+- 위의 코드는 App컴포넌트에서 props를 인자로 받음
+- 내부의 Profile컴포넌트로 전달해서 name, introduction, viewCount에 각각 속성을 할당함
+- 이 때 전달되는 props는 다음과 같은 자바스크립트 객체임
+
+```js
+{
+  name : "소플",
+  introduction = "안녕하세요",
+  viewCount : 1500
+}
+```
+
+- JSX에서는 중괄호를 사용하면 JS코드를 넣을 수 있다고 배움
+- 다음 코드처럼 props를 통해서 value를 할당 할 수도 있고, 직접 중괄호를 사용하여 할당할 수 도 있음
+
+```js
+funciotn App(Props){
+  return(
+    <Layout
+      with={2560}
+      height={1440}
+      header={
+        <Header title = "소플의 블로그" />
+      }
+      footer = {
+        <Footer />
+      }
+    />
+  );
+};
+```
+
+- JSX를 사용하지 않는 경우 props의 전달 방법은 createElemnet()함수를 사용하는 것
+
+```js
+React.createElemet(
+  type,
+  [props],
+  [...children]
+)
+```
+
+- createElemnet()함수의 두 번째 매개변수가 바로 props임
+- JSX를 사용하지 않으면 다음과 같이 코드를 작성 할 수 있음
+
+```js
+React.createElement(
+  Profile,
+  {
+   name : "소플",
+  introduction = "안녕하세요",
+  viewCount : 1500 
+  },
+  null
+);
+```
+
+---
+### 컴포넌트 만들기
+
+#### 1. 컴포넌트의 종류
+
+- 리액트의 초기버전을 사용할 때는 클래스형 컴포넌트를 주로 사용
+- 이후 Hook이라는 개념이 나오면서 최근에는 함수형 컴포넌트를 주로 사용함
+- 예전에 작성된 코드나 anstjemfd l클래스형 컴포넌트를 사용하고 있기 때문에 클래스 형 컴포넌트와 컴포넌트의 생명주기에 관해서 공부해두어야 함
+
+#### 2. 함수형 컴포넌트
+
+- Welcome컴포넌트는 props를 받아, 받은 props중 name키의 값을 "안녕”뒤에 넣어 반환
+
+```js
+function Welecome(props){
+  return <h1>안녕, {props.name}</h1>
+}
+```
+
+#### 3. 클래스형 컴포넌트
+
+- Welcome컴포넌트는 React.Componet class로부터 상속을 받아 선언
+
+```js
+clss Welcome extends React.Componet{
+  render(){
+    return <h1>안녕, {this.props.name}</h1>
+  }
+}
+```
+
+#### 4. 컴포넌트 이름 짓기
+
+- 이름은 항상 대문자로 시작
+- 왜냐하면 리액트는 소문자로 시작하는 컴포넌트를 DOM태그로 인식하기 때문 html tag.
+- 컴포넌트 파일 이름과 컴포넌트 이름은 같게 함
+
+#### 5. 컴포넌트 렌더링
+
+- 렌더링의 과정은 다음 코드와 같음
+
+```js
+function Welcome(props){
+    return <h1>안녕, {this.props.name}</h1>
+}
+
+const element = <Welcome name = "인제" />;
+ReactDOM.render(
+  elemnet,
+  document.getElementById('root')
+);
+```
+---
+### 컴포넌트 합성
+
+- 컴포넌트 합성은 여러 개의 컴포넌트를 합쳐서 하나의 컴포넌트를 만드는 것임
+- 리액트에서는 컴포넌트 안에 또 다른 사용할 수 있기 때문에 복잡한 화면을 여러 개의 컴포넌트로 나누어 구현할 수 있음
+- 다음 코드에서는 props의 값을 다르게 해서 Welcome컴포넌트를 여러 번 사용함
+
+```js
+function Welecome(props){
+  return <h1>Hello, {props.nmae}</h1>
+}
+function App(props){
+  return(
+    <div>
+      <Welcome name = "Mike" />
+      <Welcome name = "Steve" />
+      <Welcome name = "Jane" />
+    </div>
+  )
+}
+ReactDOM.render(
+  <App />
+  document.getElemnetById('root')
+);
+```
+---
+### 컴포넌트 추출
+
+- 복잡한 컴포넌트를 쪼개서 여러 개의 컴포넌트로 나눌 수 있음
+- 큰 컴포넌트에서 일부를 추출해서 새로운 컴포넌트를 만들 것임
+- 실무에서는 처음부터 1개의 컴포넌트에 하나의 기능만 사용하도록 설계하는 것이 좋음
+- Comments는 댓글 표시 컴포넌트임
+- 내부에는 이미지, 이름, 댓글과 작성일이 포함되어 있음
+- 첫 번째로 이미지 부분을 Avatar컴포넌트로 추출해 보겠음
+
+```js
+function Avatar(props){
+  return(
+    <img className = "avatar"
+    src = {props.uer.avatarUrl}
+    alt = {props.user.name}
+    />
+  );
+}
+```
+
+```js
+function Commnet(props){
+  return(
+    <Avatar user = {props.author} />
+    <div className = "Comment">
+    <div className = "user-info">
+      <img className = "avatar"
+        src = {props.uer.avatarUrl}
+        alt = {props.user.name}
+      />
+      <div className = "user-info-name">
+        {props.author.name}
+      </div>
+    </div>
+
+    <div className = "commnet-text">
+      {props.text}
+    </div>
+      <div className = "commnet-data">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
+}
+```
+
+- 두 번째로 사용자 정보 부분을 추출함
+- 컴포넌트 이름은 UseInfo로 함. React컴포넌트 이름은 Camel Notatio을 사용
+- UserInfo안에 Avatar컴포넌트를 넣어서 완성
+
+```js
+function UserInfo(props){
+  return(
+    <div className="user-info">
+      <Avatar user = {props.user} />
+      <div className ="user-info-name">
+        {pros.user.name}
+      </div>
+    </div>
+  );
+}
+```
+
+---
 
 ## GitHub 2023년 3월 23일
 
