@@ -1,7 +1,7 @@
 # 23-React1 201930227 이지원
 
-대림대학교 컴퓨터정보학부 3학년 1반 리엑트 수업
----
+## 대림대학교 컴퓨터정보학부 3학년 1반 리엑트 수업
+
 ## GitHub 2023년 4월 6일
 
 #### 2023년 3월 30일 강의 추가 내용
@@ -9,7 +9,7 @@
 - 추출 후 다시 결합한 UserInfo를 Comment 컴포넌트 반영하면 다음과 같은 모습이 됨
 - 처음에 비해 가독성이 높아진 것을 확인할 수 있음
 
-```js 
+```js
 Function Comment(props){
   return(
     <div calssName ="commnet">
@@ -26,16 +26,16 @@ Function Comment(props){
 
 ---
 
-
 ### 댓글 컴포넌트 만들기
 
 - 프로젝트 디렉토리에서 /src/chapter_05디렉토리를 새로 생성함
 - 그 안에 Comment.jsx라는 파일을 생성
 - 이 파일에서 아래 코드처럼 Comment 컴포넌트를 만듬
+
 ##### Commnet.jsx
+
 ```jsx
 const Comment = (props) => {
-
   return (
     <div>
       <h1>제가 처음 만든 컴포넌트입니다.</h1>
@@ -47,6 +47,7 @@ const Comment = (props) => {
 - 이번에는 CommentList.js를 생성하고 컴포넌트를 다음과 같이 코딩함
 
 ##### CommnetList.js
+
 ```jsx
 const CommentList = () => {
   return (
@@ -60,8 +61,9 @@ const CommentList = () => {
 - CommentList를 렌더링하기 위해 index.js를 다음과 같이 수정
 
 ##### index.js
+
 ```jsx
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Clock /> -> <CommentList />
@@ -72,19 +74,18 @@ root.render(
 - 이번에는 Commnet를 범용으로 사용할 수 있도록 코멘트를 props로 받아 수정하지만 여기 까지만 수정해서는 아무것도 출력되지 않음
 - 그 이유는 props로 전달 받은 것이 아직 없기때문
 
-
 ##### Commnet.jsx
+
 ```jsx
 const Comment = (props) => {
-
   return (
     <div style={styles.wrapper}>
       <div style={styles.imageContainer}>
         <img
-          src='https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-          alt='프로필 이미지'
+          src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+          alt="프로필 이미지"
           style={styles.image}
-          />
+        />
       </div>
       <div style={styles.contentContainer}>
         <span style={styles.nameText}>{props.name}</span>
@@ -99,14 +100,13 @@ const Comment = (props) => {
 - 우선 하나만 전달하고, 잘 되면 몇 개를 복사해서 전달
 
 ##### CommentList.js
+
 ```js
 const CommentList = () => {
   return (
     <div>
       {comments.map((foo) => {
-        return(
-          <Comment name={"이지원"} comment={"안녕하세요 이지원입니다."} />
-        )
+        return <Comment name={"이지원"} comment={"안녕하세요 이지원입니다."} />;
       })}
     </div>
   );
@@ -119,29 +119,28 @@ const CommentList = () => {
 - 몰론 comments객체도 파일 안에서 수정하는 것이 아니라 자동으로 받아와야하지만 이 장에서는 개념만 이해하고 넘어가겠음
 
 ##### CommentList.js
+
 ```js
 const comments = [
   {
-    name : "이지원1",
-    comment : "안녕하세요 이지원1입니다."
+    name: "이지원1",
+    comment: "안녕하세요 이지원1입니다.",
   },
   {
-    name : "이지원2",
-    comment : "안녕하세요 이지원2입니다."
+    name: "이지원2",
+    comment: "안녕하세요 이지원2입니다.",
   },
   {
-    name : "이지원3",
-    comment : "안녕하세요 이지원3입니다."
-  }
-]
+    name: "이지원3",
+    comment: "안녕하세요 이지원3입니다.",
+  },
+];
 
 const CommentList = () => {
   return (
     <div>
       {comments.map((foo) => {
-        return(
-          <Comment name={foo.name} comment={foo.comment} />
-        )
+        return <Comment name={foo.name} comment={foo.comment} />;
       })}
     </div>
   );
@@ -177,8 +176,7 @@ const CommentList = () => {
 - JSX를 사용할 경우 컴포넌트에 키-값 쌍으로 형태로 넣어주면 됨
 - 문자열 이외에 정수, 변수, 그리고 다른 컴포넌트 등이 들어갈 경우 중괄호를 사용해서 감싸주어야 함
 - JSX를 사용하지 않는 경우 createElement() 함수의 두 번째 파라미터로 자바스크립트 객체를 넣어주면 됨
-- 
----
+- ***
 
 ## state와 생명주기
 
@@ -197,6 +195,7 @@ const CommentList = () => {
 - 함수형에서는 useState()라는 함수 사용
 
 ##### class LikeButton
+
 ```js
 class LikeButton extends React.Componemt{
   constructor(props){
@@ -217,17 +216,17 @@ class LikeButton extends React.Componemt{
 ```js
 // state를 직접 수정(잘못된 사용법)
 this.state = {
-  name : '이지원'
-}
+  name: "이지원",
+};
 // setstate를 직접 수정(정상적인 사용법)
 this.setstate = {
-  name : '이지원'
-}
+  name: "이지원",
+};
 ```
 
 ### [component vs element vs instance]
 
-- 교쟈에는 나와 있지 않지만 여기서 component, element, instance의 의미에 대해 확인해 보자
+- 교재에는 나와 있지 않지만 여기서 component, element, instance의 의미에 대해 확인해 보자
 
 ### 생명주기에 대해 알아보기
 
@@ -245,53 +244,189 @@ this.setstate = {
 - /src.chaper_06이라는 이름으로 폴더 생성
 - 만든 폴더에 Notification.jsx라는 파일을 만들고 아래 코드처럼 클래스 컴포넌트를 만듬
 
+##### Notification
+
 ```js
-import React from 'react';
+import React from "react";
 
 const styles = {
-  wrapper : {
-    margin : 8,
-    padding : 8,
-    display : "flex",
-    flexDirection : "row",
-    vorder : "1px solid grey",
-    borderRadius : 16
+  wrapper: {
+    margin: 8,
+    padding: 8,
+    display: "flex",
+    flexDirection: "row",
+    vorder: "1px solid grey",
+    borderRadius: 16,
   },
-  messageText : {
-    color : "black",
-    fontSize : 16
-  }
-}
+  messageText: {
+    color: "black",
+    fontSize: 16,
+  },
+};
 
-class Notification extends React.Component{
-  constructor(props){
+class Notification extends React.Component {
+  constructor(props) {
     super(props);
 
     this.state = {};
   }
 
-  componentDidMount(){
+  componentDidMount() {
     console.log(`${this.props.id} componentDidMount() called`);
   }
 
-  componentDidUpdate(){
+  componentDidUpdate() {
     console.log(`${this.props.id} componentDidUpdate() called`);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     console.log(`${this.props.id} componentWillUnmount() called`);
   }
 
   render() {
     return (
-    <div style={styles.wrapper}>
-      <span style={styles.messageText}>{this.props.message}</span>
-    </div>
-  );}
-};
+      <div style={styles.wrapper}>
+        <span style={styles.messageText}>{this.props.message}</span>
+      </div>
+    );
+  }
+}
 
 export default Notification;
 ```
+
+- 다음으로 NotificationList 컴포넌트를 만들어 줌
+- Notification 컴포넌트를 목록 형태로 보여주기 위한 컴포넌트임
+
+##### NotificationList.js
+
+```js
+import React from "react";
+import Notification from "./Notification.jsx";
+
+const reservedNotifications = [
+  {
+    id: 1,
+    message: "안녕하세요, 오늘 일정을 알려드립니다.",
+  },
+  {
+    id: 2,
+    message: "점심식사 시간입니다.",
+  },
+  {
+    id: 3,
+    message: "이제 곧 미팅이 시작됩니다.",
+  },
+];
+
+var timer;
+
+class NotificationList extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      notifications: [],
+    };
+  }
+
+  componentDidMount() {
+    const { notifications } = this.state;
+    timer = setInterval(() => {
+      if (notifications.length < reservedNotifications.length) {
+        const index = notifications.length;
+        notifications.push(reservedNotifications[index]);
+        this.setState({
+          notifications: notifications,
+        });
+      } else {
+        this.setState({
+          notifications: [],
+        });
+        clearInterval(timer);
+      }
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    if (timer) {
+      clearInterval(timer);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        {this.state.notifications.map((notification) => {
+          return (
+            <Notification
+              key={notification.id}
+              id={notification.id}
+              message={notification.message}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+}
+
+export default NotificationList;
+```
+
+- 랜더링을 하기위해 index.js파일을 수정
+
+##### index.js
+
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+// import App from './App';
+import reportWebVitals from "./reportWebVitals";
+import CommentList from "./chapter_05/CommentList";
+import NotificationList from "./chapter_06/NotificationList"; // 추가
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <CommentList /> -> <NotificationList />
+  </React.StrictMode>
+);
+
+reportWebVitals();
+```
+
+- 출력이 없어지지 않게 하려면 NotificationList.jsx에서 다음 코드를 주석 처리하면 됨
+
+##### NotificationList.jsx
+
+```js
+ componentDidMount() {
+    const {notifications} = this.state;
+    timer = setInterval(()=>{
+      if(notifications.length < reservedNotifications.length){
+        const index = notifications.length;
+        notifications.push(reservedNotifications[index]);
+        this.setState({
+          notifications: notifications
+        });
+      }else {
+        // this.setState({
+        //   notifications: []
+        // });
+        clearInterval(timer);
+      }
+    }, 1000);
+  }
+```
+
+### React Developer Tools 설치하기
+
+1. 크롬 웹스토어에 React Developer Tools로 검색하면 찾을 수 있음
+2. 크롬에 추가 버튼을 클릭해서 설치함
+3. 설치 후 크롬 창 새로고침 후 개발자 도구(F12)를 열기
+4. 메모리 옆 >>을 눌러 잘 설치 되었는지 확인
 
 ---
 
@@ -313,11 +448,12 @@ export default Notification;
 - DOM엘리먼트는 페이지의 모든 정보를 갖고있어 무거움
 - 반면 리액트 엘리먼트는 변화한 부부만 갖고있어 가벼움
 
-||DOM| Virtual DOM|
-|------|---|---|
-|업데이트 속도|느리다|빠르다|
-|element 업데이트 방식|DOM 전체를 업데이트|변화 부분을 가상 DOM으로 만든 후 DOM과 비교하여 다른 부분만 업데이트|
-|메모리|낭비가 심함|효율적|
+|                       | DOM                 | Virtual DOM                                                          |
+| --------------------- | ------------------- | -------------------------------------------------------------------- |
+| 업데이트 속도         | 느리다              | 빠르다                                                               |
+| element 업데이트 방식 | DOM 전체를 업데이트 | 변화 부분을 가상 DOM으로 만든 후 DOM과 비교하여 다른 부분만 업데이트 |
+| 메모리                | 낭비가 심함         | 효율적                                                               |
+
 ### 2. 엘리먼트의 생김새
 
 - 리랙트 엘리먼트는 자바스크립트 객체의 형태로 존재
@@ -335,6 +471,7 @@ export default Notification;
   }
 }
 ```
+
 - 내부적으로 자바스크립트 객체를 만드는 역할을 하는 함수가 createElement()임
 - 첫 번째 매개변수가 type임. 이 곳에 태그가 들어가면 그대로 표현하고, 만일 리액트 컴포넌트가 들어가면 이 것을 분해해 결국 태그로 만들게 됨
 - 두 번째 매개변수인 props는 속성을 나타냄
@@ -361,14 +498,14 @@ export default Notification;
 - 이 div태그 안에 리액트 엘리먼트가 렌더링 되며 이 것을 Root DOM node라고 함
 
 ```html
-<div id = "root"></div>
+<div id="root"></div>
 ```
 
 - 엘리먼트를 렌더링하기 위해서는 다음과 같은 코드가 필요함
 
 ```jsx
-const elemnt = <h1>안녕, 리액트!</h1>
-ReactDOM.render(element, document.getElementById('root'));
+const elemnt = <h1>안녕, 리액트!</h1>;
+ReactDOM.render(element, document.getElementById("root"));
 ```
 
 - 이때 render()함수를 사용하게 됨
@@ -388,15 +525,15 @@ ReactDOM.render(element, document.getElementById('root'));
 - 다음 코드를 실행하고 크롬 개발자 도구에서 확인해 보면 시간 부분만 업데이트 되는 것을 확인 할 수 있음
 
 ```js
-function tick(){
+function tick() {
   console.log("1");
   const element = (
     <div>
       <h1>안녕, 리액트!</h1>
       <h2>현재 시간: {new Date().toLocaleTimeString()}</h2>
     </div>
-  )
-  ReactDOM.render(element, document.getElementById('root'));
+  );
+  ReactDOM.render(element, document.getElementById("root"));
 }
 
 setInterval(tick, 1000);
@@ -414,6 +551,7 @@ setInterval(tick, 1000);
 - 컴포넌트는 자바스크립트 함수와 입력과 출력이 있다는 면에서 유사함
 - 다만 입력과 출력은 입력은 Props가 담당하고 출력은 리액트 엘리먼트의 형태로 출력 됨
 - 엘리먼트를 필요한 만큼 만들어 사용한다는 면에서는 객체 지향의 개념과 비슷함
+
 ---
 
 ### Props에 대해서 알아보기
@@ -423,7 +561,7 @@ setInterval(tick, 1000);
 - Props는 prop(property:속성, 특징)의 준말
 - 이 props가 바로 컴포넌트의 속성
 - 컴포넌트에 어떤 속성, props를 넣느냐에 따라서 속성이 다른 엘리먼Props는 컴포넌트에 전달 할 다양한 정보를 담고 있는 자바스크립트 객체임트가 출력 됨
-  
+
 #### 2. Props의 특징
 
 - 읽기전용(변경할 수 없음)
@@ -436,17 +574,18 @@ setInterval(tick, 1000);
 
 ```js
 // pure함수
-function sum (a, b){
+function sum(a, b) {
   return a + b;
 }
 ```
 
 ```js
 // impure함수
-function withdraw(account, amount){
+function withdraw(account, amount) {
   account.total -= amount;
 }
 ```
+
 #### 4. Props 사용법
 
 - JSX에서는 key-value쌍으로 props를 구성함
@@ -463,6 +602,7 @@ funciton App(props){
   );
 }
 ```
+
 - 위의 코드는 App컴포넌트에서 props를 인자로 받음
 - 내부의 Profile컴포넌트로 전달해서 name, introduction, viewCount에 각각 속성을 할당함
 - 이 때 전달되는 props는 다음과 같은 자바스크립트 객체임
@@ -498,11 +638,7 @@ funciotn App(Props){
 - JSX를 사용하지 않는 경우 props의 전달 방법은 createElemnet()함수를 사용하는 것
 
 ```js
-React.createElemet(
-  type,
-  [props],
-  [...children]
-)
+React.createElemet(type, [props], [...children]);
 ```
 
 - createElemnet()함수의 두 번째 매개변수가 바로 props임
@@ -514,13 +650,14 @@ React.createElement(
   {
    name : "소플",
   introduction = "안녕하세요",
-  viewCount : 1500 
+  viewCount : 1500
   },
   null
 );
 ```
 
 ---
+
 ### 컴포넌트 만들기
 
 #### 1. 컴포넌트의 종류
@@ -534,8 +671,8 @@ React.createElement(
 - Welcome컴포넌트는 props를 받아, 받은 props중 name키의 값을 "안녕”뒤에 넣어 반환
 
 ```js
-function Welecome(props){
-  return <h1>안녕, {props.name}</h1>
+function Welecome(props) {
+  return <h1>안녕, {props.name}</h1>;
 }
 ```
 
@@ -562,17 +699,16 @@ clss Welcome extends React.Componet{
 - 렌더링의 과정은 다음 코드와 같음
 
 ```js
-function Welcome(props){
-    return <h1>안녕, {this.props.name}</h1>
+function Welcome(props) {
+  return <h1>안녕, {this.props.name}</h1>;
 }
 
-const element = <Welcome name = "인제" />;
-ReactDOM.render(
-  elemnet,
-  document.getElementById('root')
-);
+const element = <Welcome name="인제" />;
+ReactDOM.render(elemnet, document.getElementById("root"));
 ```
+
 ---
+
 ### 컴포넌트 합성
 
 - 컴포넌트 합성은 여러 개의 컴포넌트를 합쳐서 하나의 컴포넌트를 만드는 것임
@@ -597,7 +733,9 @@ ReactDOM.render(
   document.getElemnetById('root')
 );
 ```
+
 ---
+
 ### 컴포넌트 추출
 
 - 복잡한 컴포넌트를 쪼개서 여러 개의 컴포넌트로 나눌 수 있음
@@ -608,12 +746,9 @@ ReactDOM.render(
 - 첫 번째로 이미지 부분을 Avatar컴포넌트로 추출해 보겠음
 
 ```js
-function Avatar(props){
-  return(
-    <img className = "avatar"
-    src = {props.uer.avatarUrl}
-    alt = {props.user.name}
-    />
+function Avatar(props) {
+  return (
+    <img className="avatar" src={props.uer.avatarUrl} alt={props.user.name} />
   );
 }
 ```
@@ -649,13 +784,11 @@ function Commnet(props){
 - UserInfo안에 Avatar컴포넌트를 넣어서 완성
 
 ```js
-function UserInfo(props){
-  return(
+function UserInfo(props) {
+  return (
     <div className="user-info">
-      <Avatar user = {props.user} />
-      <div className ="user-info-name">
-        {pros.user.name}
-      </div>
+      <Avatar user={props.user} />
+      <div className="user-info-name">{pros.user.name}</div>
     </div>
   );
 }
