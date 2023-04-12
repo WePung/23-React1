@@ -1,8 +1,300 @@
 # 23-React1 201930227 이지원
 
 대림대학교 컴퓨터정보학부 3학년 1반 리엑트 수업
+---
+## GitHub 2023년 4월 6일
+
+#### 2023년 3월 30일 강의 추가 내용
+
+- 추출 후 다시 결합한 UserInfo를 Comment 컴포넌트 반영하면 다음과 같은 모습이 됨
+- 처음에 비해 가독성이 높아진 것을 확인할 수 있음
+
+```js 
+Function Comment(props){
+  return(
+    <div calssName ="commnet">
+      <UserInfo user = {props.author} />
+      <div className = "comment-text">
+        {props.text}
+      </div>
+      <div className = "commnet-date">
+      {formatDate(props.date)}
+    </div>
+  )
+}
+```
 
 ---
+
+
+### 댓글 컴포넌트 만들기
+
+- 프로젝트 디렉토리에서 /src/chapter_05디렉토리를 새로 생성함
+- 그 안에 Comment.jsx라는 파일을 생성
+- 이 파일에서 아래 코드처럼 Comment 컴포넌트를 만듬
+##### Commnet.jsx
+```jsx
+const Comment = (props) => {
+
+  return (
+    <div>
+      <h1>제가 처음 만든 컴포넌트입니다.</h1>
+    </div>
+  );
+};
+```
+
+- 이번에는 CommentList.js를 생성하고 컴포넌트를 다음과 같이 코딩함
+
+##### CommnetList.js
+```jsx
+const CommentList = () => {
+  return (
+    <div>
+      <Comment />
+    </div>
+  );
+};
+```
+
+- CommentList를 렌더링하기 위해 index.js를 다음과 같이 수정
+
+##### index.js
+```jsx
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <Clock /> -> <CommentList />
+  </React.StrictMode>
+);
+```
+
+- 이번에는 Commnet를 범용으로 사용할 수 있도록 코멘트를 props로 받아 수정하지만 여기 까지만 수정해서는 아무것도 출력되지 않음
+- 그 이유는 props로 전달 받은 것이 아직 없기때문
+
+
+##### Commnet.jsx
+```jsx
+const Comment = (props) => {
+
+  return (
+    <div style={styles.wrapper}>
+      <div style={styles.imageContainer}>
+        <img
+          src='https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
+          alt='프로필 이미지'
+          style={styles.image}
+          />
+      </div>
+      <div style={styles.contentContainer}>
+        <span style={styles.nameText}>{props.name}</span>
+        <span style={styles.commentText}>{props.comment}</span>
+      </div>
+    </div>
+  );
+};
+```
+
+- CommentList를 이용해서 Comment에 props를 전달해 보겠음
+- 우선 하나만 전달하고, 잘 되면 몇 개를 복사해서 전달
+
+##### CommentList.js
+```js
+const CommentList = () => {
+  return (
+    <div>
+      {comments.map((foo) => {
+        return(
+          <Comment name={"이지원"} comment={"안녕하세요 이지원입니다."} />
+        )
+      })}
+    </div>
+  );
+};
+```
+
+- 그런데 이렇게 코드를 작성하면 매번 컴포넌트를 수정해야 하기때문에 나쁜 코드의 예시임
+- 다음과 같은 코드처럼 별도의 객체로 받아 컴포넌트에서는 이것을 분리하여 출력하도록 해야함
+- 이때 사용하는 함수가 map()함수인데 이것은 향후 배울 예정
+- 몰론 comments객체도 파일 안에서 수정하는 것이 아니라 자동으로 받아와야하지만 이 장에서는 개념만 이해하고 넘어가겠음
+
+##### CommentList.js
+```js
+const comments = [
+  {
+    name : "이지원1",
+    comment : "안녕하세요 이지원1입니다."
+  },
+  {
+    name : "이지원2",
+    comment : "안녕하세요 이지원2입니다."
+  },
+  {
+    name : "이지원3",
+    comment : "안녕하세요 이지원3입니다."
+  }
+]
+
+const CommentList = () => {
+  return (
+    <div>
+      {comments.map((foo) => {
+        return(
+          <Comment name={foo.name} comment={foo.comment} />
+        )
+      })}
+    </div>
+  );
+};
+```
+
+## 5장 요약
+
+### 리액트 컴포넌트
+
+#### 컴포넌트 기반 구조
+
+- 작은 컴포넌트들이 모여서 하나의 컴포넌트를 구성하고 이러한 컴포넌트들이 모여서 전체 페이지를 구성
+
+#### 개념적으로 자바스크립트의 함수와 비슷함
+
+- 속성들을 입력으로 받아서 그에 맞는 리액트 엘리먼트를 생성하여 리턴함
+
+### Props
+
+#### Props의 개념
+
+- 래액트 컴포넌트의 속성
+- 컴포넌트에 전달할 다양한 정보를 담고 있는 자바스크립트 객체
+
+#### Props의 특징
+
+- 읽기 전용
+- 리액트 컴포넌트의 props는 바꿀 소 없고 같은 props가 들어오면 항상 같은 엘리먼트를 리턴해야 함
+
+#### Props 사용법
+
+- JSX를 사용할 경우 컴포넌트에 키-값 쌍으로 형태로 넣어주면 됨
+- 문자열 이외에 정수, 변수, 그리고 다른 컴포넌트 등이 들어갈 경우 중괄호를 사용해서 감싸주어야 함
+- JSX를 사용하지 않는 경우 createElement() 함수의 두 번째 파라미터로 자바스크립트 객체를 넣어주면 됨
+- 
+---
+
+## state와 생명주기
+
+### state란?
+
+- state는 리액트 컴포넌트의 상태를 의미함
+- 상태의 의미는 정상인지 비정상인지가 아니라 컴포넌트의 데이터를 의미함
+- 정확히는 컴포넌트의 변경가능한 데이터를 의미함
+- State가 변하면 다시 렌더링 되기 떄문에 렌더링과 관련된 값만 state에 포함시켜야 함
+
+### State의 특징
+
+- 리액트만의 특별한 형태가 아닌 단지 자바스크립트 객체일 뿐임
+- 예의 LikeButton은 class컴포넌트임
+- constructor는 생성자이고 그 안에 있는 this.state가 현 컴포넌트의 state임
+- 함수형에서는 useState()라는 함수 사용
+
+##### class LikeButton
+```js
+class LikeButton extends React.Componemt{
+  constructor(props){
+    super(props);
+
+    this.state = {
+      liked: false
+    };
+  }
+  ...
+}
+```
+
+- state는 병경은 가능하다고 했찌만 직접 수정해서는 안됨
+- 불가능 하다고 생각하는 것이 좋음
+- state를 변경하고자 할 떄는 setstate()함수를 사용함
+
+```js
+// state를 직접 수정(잘못된 사용법)
+this.state = {
+  name : '이지원'
+}
+// setstate를 직접 수정(정상적인 사용법)
+this.setstate = {
+  name : '이지원'
+}
+```
+
+### [component vs element vs instance]
+
+- 교쟈에는 나와 있지 않지만 여기서 component, element, instance의 의미에 대해 확인해 보자
+
+### 생명주기에 대해 알아보기
+
+- 생명주기는 컴포넌트의 생성 시점, 사용 시점, 종료 시점을 나타내는 것임
+- constuctor가 실행되면서 컴포넌트가 생성됨
+- 생성 직후 conponentDidMount()함수가 호출 됨
+- 컴포넌가 소멸하기 전까지 여러 번 랜더링 함
+- 랜더림은 rpops, setState(), forceUpdate()에 의해 상태가 변경되면 이루어짐
+- 그리고 랜더링이 끝나면 componentDinUpdate()함수가 호출됨
+- 마지막으로 컴포넌트가 언마운트 되면 conpomentWillUnmount()함수가 호출됨
+
+### state와 생명주기 함수 사용하기
+
+- state 사용하기 - 실습3의 생명주기 함수 사용해보기 코드와 함께 작성 되었음
+- /src.chaper_06이라는 이름으로 폴더 생성
+- 만든 폴더에 Notification.jsx라는 파일을 만들고 아래 코드처럼 클래스 컴포넌트를 만듬
+
+```js
+import React from 'react';
+
+const styles = {
+  wrapper : {
+    margin : 8,
+    padding : 8,
+    display : "flex",
+    flexDirection : "row",
+    vorder : "1px solid grey",
+    borderRadius : 16
+  },
+  messageText : {
+    color : "black",
+    fontSize : 16
+  }
+}
+
+class Notification extends React.Component{
+  constructor(props){
+    super(props);
+
+    this.state = {};
+  }
+
+  componentDidMount(){
+    console.log(`${this.props.id} componentDidMount() called`);
+  }
+
+  componentDidUpdate(){
+    console.log(`${this.props.id} componentDidUpdate() called`);
+  }
+
+  componentWillUnmount(){
+    console.log(`${this.props.id} componentWillUnmount() called`);
+  }
+
+  render() {
+    return (
+    <div style={styles.wrapper}>
+      <span style={styles.messageText}>{this.props.message}</span>
+    </div>
+  );}
+};
+
+export default Notification;
+```
+
+---
+
 ## GitHub 2023년 3월 30일
 
 ## 엘리먼트 렌더링
