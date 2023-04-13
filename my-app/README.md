@@ -2,6 +2,359 @@
 
 ## 대림대학교 컴퓨터정보학부 3학년 1반 리엑트 수업
 
+
+
+## GitHub 2023년 4월 13일
+### 6장 요약
+
+### State
+
+#### State란?
+- 리액트 컴포넌트의 변경 가능한 데이터
+- 컴포넌트를 개발하는 개발자가 직접 정의해서 사용
+- State가 변경될 경우 컴포넌트가 재랜더링 됨
+- 랜더링이나 데이터 흐름에 사용되는 값만 state에 포함시켜야 함
+
+### State의 특징
+
+- 자바스크림트의 객체 형태로 존재
+- 직접적인 변경이 불가능 함
+- 클래스 컴포넌트
+  - 생성자에서 모든 state를 한번에 정의
+  - State를 변경하고자할 때에는 꼭 setState()함수를 사용
+- 함수 컴포넌트
+  - useState()훅을 사용하여 각각의 state를 정의
+  - 각 state별로 주어지는 set함수를 사용하여 state값을 변경
+---
+
+## Hook
+
+### 훅이란 무엇인가
+
+- 클래스형 컴포넌트에서는 생성자(construtor)에서 state를 정의하고 setState()함수를 통해 state를 업데이트 함
+- 예전에 사용하던 함수형 컴포넌트는 별도로 state를 정의하거나 컴포넌트의 생명주기에 맞춰서 어떤 코드가 실행되도록 할 수 없음
+- 함수형 컴포넌트에서도 state나 생명중기 함수의 기능을 사용하게 해주기 위해 추가된 기능이 바로 훅(Hook)임
+- 함수형 컴포넌트도 훅을 사용하여 클래스형 컴포넌트의 기능을 모두 동일하게 구현할 수 있게 되어있음
+- Hook이란 'state와 생명주기 기능에 갈고리를 걸어 원하는 시점에 정해진 함수를 실행되도록 만든 함수'를 의미함
+- 훅의 이름은 모두'use'로 시작함
+- 사용자 정의 훅(custom hook)을 만들 수 있으며 이 경우에 이름을 자유롭게 할 수 있으나 'use'로 시작할 것을 권장함
+
+### useState
+
+- useState는 함수형 컴포넌트에서 state를 사용하기 위한 Hook임
+- 다음 예제는 버튼을 클릭할 때마다 카운트가 증가한느 함수형 컴포넌트임
+- 하지만 증가는 시킬 수 있지만 증가할 때마다 재 렌더링은 일어나지 않음
+- 이럴 때 state를 사용해야 하지만 함수형에는 없기때문에 useState()를 사용
+
+```js
+import React, {useState} from "react"l
+
+funciont Counter(prots){
+  var count = 0;
+
+  return(
+    <div>
+      <p>총 {count}번 클릭했습니다.</p>
+      <button onClick={()=>count++}>클릭</button>
+    </div>
+  )
+}
+```
+
+- useState()함수의 사용법은 다음과 같음
+
+```js
+const [변수명, ser함수명] = useState(초깃값);
+```
+
+- 첫 번째 항목은 state의 이름(변수명)임
+- 두 번째 항목은 state의 set함수임 즉, state를 업데이트 하는 함수임
+- 함수를 호출 할 때 state의 초기값을 성정함
+- 함수의 리턴값은 배열의 형태임
+
+```js
+import React, {useState} from "react"l
+
+funciont Counter(prots){
+  const [count, setCount] = useState(0);
+
+  return(
+    <div>
+      <p>총 {count}번 클릭했습니다.</p>
+      <button onClick={()=>setCount(count +1)}>클릭</button>
+    </div>
+  )
+}
+```
+
+### useEffect
+
+- useState와 함께 많이 사용하는 Hook임
+- 이 함수는 사이드 이펙트를 수행하기 위한 것임
+- 영어로는 side effect는 부작용을 의미
+- 일반적으로 프로그래밍에서 사이드 이펙트는 개발자가 의도하지않은 코드가 실행되면서 버그가 발생하는 것을 말함
+- 하지만 리액트에서는 효과 혹은 영향을 뜻하는 effect의 의미에 가까움
+- 예를 들면 서버에서 데이터를 받아오거나 수동으로 DOM을 변경하는 등의 작업을 의미함
+- 이 작업을 이펙트라고 부르는 이유는 이 작업들이 다른 컴포넌트에 영향을 미칠 수 있으며 렌더링중에는 작업이 완료될 수 없기 때문임
+- 렌더링이 끝난 이후에는 실행되어야 하는 작업들임
+- 클래스 컴포넌트의 생명주기 함수와 같은 기능을 하나로 통합한 기능을 제공함
+- 저자는 useEffect가 side effect가 아니라 effet에 가깝다고 설명하고 있짜만 이것은 부작용의 의미를 잘못 해석해서 생긴 오해이다.
+- 결국 sideEffect는 렌더링 외에 실행해야하는 부수적인 코드를 말함
+- 예를 들면 네트워크 리퀘스트, DOM수동조작, 로깅 등은 정리(clean-up)가 필요없는 경우들임
+- useEffect()함수는 다음과 같이 사용함
+- 첫 번째 파라미터는 이펙트 함수가 들어아고 두 번째 파라미터로는 의존성 배열이 들어감
+
+```js
+useEffect(이펙트 함수, 의존성 배열);
+```
+
+- 의존성 배열은 이펙트가 의존하고 이는 배열로, 배열 안에 있는 변수 중에 하나라도 값이 변경되었을 때 이펙트 함수가 실행 됨
+- 이펙트 함수는 처음 컴포넌트가 렌더링 된 이후, 그리고 재 렌더링 이후에 실행됨
+- 만약 이펙트 함수가 마운트와 언마운트 될 때만 한 번씩 실행되게 하고싶으면 빈 배열을 넣으면 됨
+- 이 경우 props나 state에 있는 어떤 값에도 의존하지 않기때문에 여러번 실행되지 않음
+- 의존성 배열을 생략하는 경우는 업데이트될 때마다 호출 됨
+
+```js
+import React, {useState, useEffect} from "react"l
+
+funciont Counter(prots){
+  const [count, setCount] = useState(0);
+
+  // componentDidMount, componentDidUpdate와 비숫하게 작동함
+  useEffect(()=>{
+    // 브라우저 API를 사용해서 document의 title을 업데이트 함
+    documonet.title = `총 ${count}번 클릭했습니다.`;
+  });
+
+  return(
+    <div>
+      <p>총 {count}번 클릭했습니다.</p>
+      <button onClick={()=>setCount(count +1)}>클릭</button>
+    </div>
+  )
+}
+```
+
+- 여기서는 배열 없이 useEffect를 사용했기 때문에 DOM이 변경된 이후에는 해당 이펙트 함수를 실행하라는 의미임
+- componentWillUnmount()와 동일한 기능은 어떻게 구현하는지 알아보자
+
+```js
+function IserStatusWithCounter(props){
+  const [count, setCount] = useState(0);
+  useEffect(()=>{
+    document.title = `총${count}번 클릭했습니다.`;
+  });
+
+  const [isOnline, setIsOnline] = useState(null);
+  useEffect(()=>{
+    ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+      return () => {
+        ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+      };
+  });
+
+  function handleStatusChage(status){
+    setIsOnline(status.isOnline);
+  }
+}
+```
+
+- useEffect()에서 리턴하는 함수는 컴포넌트가 마운트 해제될 때 호출 됨
+- 정리하면 다음과 같음
+
+```js
+useEffct(()=>{
+  // 컴포넌트가 마운트 된 이후 의존성 배열에 있는 변수들 중 하나라도 값이 변경되었을 때 실행됨
+  // 의존성 배열에 빈 배열([])을 넣으면 마운트와 언마운트시에 단 한 번씩만 실행 됨
+  // 의존성 배열 생략 시 컴포넌트 업데이트 시마다 실행됨
+  // ...
+
+  return () => {
+    //컴포넌트가 마운트 해제되기 전에 실행됨
+  }
+}, [의존성 변수1, 의존성 변수2,...])
+```
+
+### useMemo
+
+- useMemo() 훅은 Memoizde value를 리턴하는 훅임
+- 이전 계산값을 갖고 있기 때문에 연산량이 높은 작업의 반복을 피할 수 있음
+- 이 훅은 렌더링이 일어나는 동안 실행됨
+- 따라서 렌더링이 일어나는 동안 실행되서는 안될 작업을 넣으면 안됨
+- 예를 들면 useEffect사이트 이펙트 와 같은 것임
+
+```js
+const memoizedValue = useMemo(
+  ()=>{
+    // 연산량이 높은 작업을 수행하여 결과를 반환
+    return computeExpensiveValue(의존성 변수1, 의존성 변수2);
+  },
+  [의존성 변수1, 의존성 변수2];
+);
+```
+
+- 메모이제이션(memoization)은 컴퓨터 프로그램이 동일한 계산을 반복해야 할 때 이전에 계싼한 값을 메모리에 저장함으로써 동일한 계산의 반복 수행을 제거하여 프로그램 실행속도를 빠르게 하는 기술임
+- 동적 계획법의 핵심이 되는 기술임
+- 다음 코드와 같이 의존성 배열을 넣지 않을 경우 렌더링이 일어날 때마다 매번 함수가  실행됨
+
+```js
+const memoizedValue = useMemo(
+  ()=> computeExpensiveValue(a, b)
+);
+```
+
+- 따라서 의존성 배열을 넣지 않은 것은 의미 없음
+- 만약 빈 배열을 넣게 되면 컴포넌트 마운트 시에만 함수가 실행됨
+
+### useCallback
+
+- useCallback() 훅은 useMemo()와 유사한 역할을 함
+- 차이점은 값이 아닌 함수를 반환한다는 점임
+- 의존성 배열을 파라미터로 받는 것은 useMemo와 동일함
+- 파라미터로 받은 함수를 콜백이라고 부름
+- useMemo와 마찬가지로 의존성 배열 중 하나라도 변경되면 콜백함수를 반환함
+
+```js
+const moemoizedCallback = useCallback(
+  ()=>{
+    doSomething(의존성 변수1, 의존성 변수2)
+  },[의존성 변수1, 의존성 변수2]
+);
+```
+
+### useRef
+
+- useRef() 훅은 레퍼런스를 사용하기 위한 훅임
+- 레퍼런스란 특정 컴포넌트에 접근할 수 있는 객체를 의미함
+- useRef() 훅은 바로 이 레퍼런스 객체를 반환함
+- 레퍼넌스 객체에는 .current라는 속성이 있는데 이 것은 현재 참조하고 있는 엘리먼트를 의미함
+
+```js
+const refContainer = useRef(초깃값);
+```
+
+- 이렇게 반환된 레퍼런스 객체는 컴포넌트의 라이프타임 전체에 걸쳐서 유지됨
+- 즉, 컴포넌트가 마운트 해제 전까지는 계속 유지된다는 의미
+
+### 훅의 규칙
+
+- 첫 번째 규칙은 무조건 최상의 레벨에서만 호출해야 한다는 것임
+- 여기서 최상위는 컴포넌트의 최상위 레벨을 의미함
+- 따라서 반복문이나 조건문 또는 중첩된 함수들 안에서 훅을 호출하면 안됨
+- 이 규칙에 따라서 훅은 컴포넌트가 렌더링 될 때마다 같은 순서로 호출되어야 함
+- 두 번째 규칙은 리액트 함수 컴포넌트에서만 훅을 호출해야 한다는 것임
+- 따라서 일반 자바스크립트 함수에서 훅을 호출하면 안됨
+- 훅은 리랙트 함수 컴포넌트 혹은 직접 만든 커스텀 훅에서만 호출할 수 있음
+
+### 나만의 훅 만들기
+
+- 필요하다면 직접 훅을 만들어 쓸 수도 있음
+- 이것을 커스텀 훅이라고 함
+- 예제 UserStatus컴포넌트는 isOnline이라는 state에 따라서 사용자의 상태가 온라인인지 아닌지를 텍스트로 보여주는 커포넌트임
+
+#### UserStatus
+```js
+import React, {useState, useEffect} from "react";
+
+function UserStatus(props){
+
+  const [isOnline, setIsOnline] = useState(null);
+
+  useEffect(()=>{
+    function handleStatusChage(status){
+      setIsOnline(status.isOnline);
+    }
+
+    ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+      return () => {
+        ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+      };
+  })
+
+  if(isOnline === null){
+    return "대기중...";
+  }
+  return isOnline ? "온라인" : "오프라인"
+}
+```
+
+- 다음 예는 연락처 목록을 제공하면서 사용자의 이름은 초록색으로 표시하는 UserListItem 컴포넌트임
+
+```js
+function UserListItem(props){
+  const [isOnline, setIsOnline] = useState(null);
+
+  useEffect(()=>{
+    function handleStatusChage(status){
+      setIsOnline(status.isOnline);
+    }
+
+    ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+      return () => {
+        ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+      };
+  });
+}
+```
+
+- 앞의 코드와 useState()와 useEffect() 훅을 사용하는 부분이 동일함
+- 이렇게 state와 관련된 로직이 중복되는 경우에 render props또는 HOC(Higher Oder Components)를 사용함
+
+### 커스텀 훅 추출하기
+
+- 두 개의 자바스크립트 함수에서 하나의 로직을 공유하도록 하고 싶을 때 새로운 함수를 하나만드는 방법을 사용함
+- 리액트 컴포넌트와 훅은 모두 함수이기 때문에 동일한 방법을 사용할 수 있음
+- 이름은 use로 시작하고 내부에서 다른 훅을 호출하는 자바스크립트 함수를 만들면 됨
+- 아래 코드는 중복되는 로직을 useUserStatus()라는 커스텀 훅으로 추출해낸 것임
+
+```js
+import {useState, useEffect} from "react";
+
+function useUserStatus(userId){
+  const [isOnline, setIsOnline] = useState(null);
+
+  useEffect(()=>{
+    function handleStatusChage(status){
+      setIsOnline(status.isOnline);
+    }
+
+    ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+      return () => {
+        ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+      };
+  });
+
+  return isOnline;
+}
+```
+
+### 커스텀 훅 사용하기
+
+- 먼저 작성했던 코드를 사용자 훅을 사용해서 수정하면 다음과 같음
+
+```js
+function UserStatus(props){
+  const isOnline = useSuerStatus(props.uer.id);
+
+  if(isOnline === null){
+    return "대기중...";
+  }
+  return isOnline ? "온라인":"오프라인";
+}
+
+function userListItem(props){
+  return (
+    <li style = {{color : isOnline ? "green" : "black"}}>{props.user.name}</li>
+  )
+}
+```
+
+- 한가지 주의할 점은 일반 컴포넌트와 마찬가지로 다른 훅을 호출하는 것은 무조건 커스텀 훅의 최상위 레벨에서만 해야함
+- 커스터 훅은 일반 함수와 같다고 생각해도 됨
+- 다만 이름은 use로 시작하도록 한다는 것만 다름
+
+---
+
 ## GitHub 2023년 4월 6일
 
 #### 2023년 3월 30일 강의 추가 내용
