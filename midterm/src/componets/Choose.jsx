@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 function Choose() {
+  const style = {
+    button:{
+      margin : 10
+    }
+  }
   // 버튼을 눌렀을 때 버튼의 value값을 저장하기 위한 state
   const [fruit, setfFruit] = useState("");
 
@@ -21,12 +26,14 @@ function Choose() {
           사과
       </button>
       <button
+        style={style.button}
         name="apple"
         value={"오렌지."}
         onClick={onChoose}>
           오렌지
       </button>
       <button
+        style={style.button}
         name="apple"
         value={"바나나."}
         onClick={onChoose}>
