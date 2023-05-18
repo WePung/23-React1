@@ -2,6 +2,270 @@
 
 ## 대림대학교 컴퓨터정보학부 3학년 1반 리엑트 수업
 
+## 13장
+
+### 합성에 대해 알아보기
+
+- 합성(Composition)은 여러 개의 컴포넌트를 합쳐서 새로운 컴포넌트를 만드는 것
+- 조합 방법에 따라 합성의 사용 기법은 다음과 같이 나눌 수 있음
+
+#### 1. Comtainment(담다, 포함하다, 격리하다)
+
+- 특정 컴포넌트가 하위 컴포넌트를 포함하는 형태의 합성 방법
+- 컴포넌트에 따라서 어떤 자식 엘리먼트가 들어올 지 미리 예상할 수 없는 경우가 있음
+- 법용적인 박스 역할을 하는 Sidebar 혹은 Dialog와 같은 컴포넌트에서 특히 자주 볼 수 있음
+- 이런 컴포넌트에서는 children prop을 사용하여 자식 엘리먼트를 출력에 그대로 전달하는 것이 좋음
+- 이때 children prop은 컴포넌트의 props에 기본적으로 들어있는 children속성을 사용
+- 다음과 같이 props.children을 사용하면 해당 컴포넌트의 하위 컴포넌트가 모두 children으로 들어오게 됨
+
+```js
+function FancyBorder(props) {
+  return (
+    <div className={"FancyBorder FancyBorder-" + props.color}>
+      {props.children}
+    </div>
+  );
+}
+```
+
+- children은 다음 구조에서 세 번째 들어가는 파라미터임
+- 파라미터가 배열로 되어있는 이유는 여러 개의 하위 컴포넌트를 가질 수 있기 때문임
+- children이 배열로 되어있는 것은 여러 개의 하위 컴포넌트를 위한 것임
+
+```js
+React.createElemnet(type, [props], [...children]);
+```
+
+### React.createElemnet()에 관하여
+
+- jsx를 사용하지 않는 경우 props전달 방법
+- 정확하게 말하면 jsx를 사용하지 않고 리액트로 엘리먼트를 생성하는 방법
+
+```js
+// jsx를 이용한 간단한 방법
+const jsxElemnet = <h1 calssName="jsx">JSX Elemnent</h1>;
+
+// 리액트 기능을 사용한 방법
+const reactElement = React.createElement(
+  "h1", //tag
+  { className: "obj" }, // props
+  "OBJ Element" // child elemnet
+);
+```
+
+- FancyBorder 컴포넌트를 사용하는 예제
+- WlecomDialog 컴포넌트는 FancyBorder 컴포넌트를 사용하고, FancyBorder 컴포넌트는 `<h1>`과 `<p>` 두개의 태그를 children이 props로 전달 됨
+
+```js
+function WelcomDialog(props) {
+  return (
+    <FancyBorder color="blue">
+      <h1 className="Dialog-title">어서오세요</h1>
+      <p className="Dialog-message">우리 사이트에 방문하신 것을 환영합니다!</p>
+    </FancyBorder>
+  );
+}
+```
+
+- 래엑트에서는 props.children을 통해 하위 컴포넌트를 하나로 모아서 제공해줌
+- 만일 여러 개의 children 집합이 필요할 경우는 별도로 props를 정의해서 각각 원하는 컴포넌트를 넣어줌
+- 예와 같이 SplitePane은 환명을 왼쪽과 오른쪽으로 분할해 주고, App에서는 SplitePane을 사용해서 left, right 두 개의 props를 정의하고 있음
+- 즉, App에서 left, right를 props를 받아 화면을 분할하게 됨
+- 이 처럼 여러 개의 children집함이 필요한 경우 별도의 props를 정의해서 사용함
+
+```js
+function SplitePane(props) {
+  return (
+    <div calssName="SplitePane">
+      <div className="SplitePane-left">{props.left}</div>
+      <div className="SplitePane-right">{props.right}</div>
+    </div>
+  );
+}
+```
+
+```js
+function App(props) {
+  return <SplitPane left={<Contacts />} right={<Chat />} />;
+}
+```
+
+#### 2. Specialization(특수화, 전문화)
+
+- 웰컴다이얼로그는 아이얼로그의 특별한 케이스임
+- 범용적인 개념을 구별이 되게 구체화하는 것을 특수화라고 함
+- 객체지향 언어에서는 상속을 사용하여 특수화를 구현함
+- 리액트에서는 합성을 사용하여 특수화를 구현함
+- 다음 예와 같이 특수화는 범용적으로 쓸 수 있는 컴포넌트를 만들어 놓고 이를 특수한 목적으로 사용하는 합성 방식
+
+```js
+function Dialog(props) {
+  return (
+    <FancyBorder color="blue">
+      <h1 className="Dialog-title">{props.title}</h1>
+      <h1 className="Dialog-message">{props.message}</h1>
+    </FancyBorder>
+  );
+}
+
+function WelcomDialog(props) {
+  return (
+    <Dialog
+      title="어서오세요"
+      message="우리 사이트에 방문하신 것을 환영합니다!"
+    />
+  );
+}
+```
+
+#### 3. Containment와 Specialization을 같이 사용하기
+
+- Containment를 위해서 props.childred을 사용하고, Specialization을 위해 직접 정의한 props를 사용하면 됨
+- Dialog컴포넌트는 이전의 것과 비슷한데 Containment를 위해 끝 부분에 props.children을 추가했음
+- Dialog를 사용하는 SignUpDialog는 Specialization을 위해 props인 title, message에 값을 넣어주고 있고 입력을 받기위해 `<input>`과 `<button>`을 사용함
+- 이 두개의 태그는 모두 props.children으로 전달되어 다이얼로그에 표시됨
+- 이러한 형태로 Containment와 Specialization을 동시에 사용할 수 있음
+
+### 상속에 대해 알아보기
+
+- 합성과 대비되는 개념으로 상속(inheritance)이 있음
+- 자식 클래스는 부모 클래스가 가진 변수나 함수 등의 속성을 모두 갖게 되는 개념임
+- 하지만 리액트에서는 상속보다는 합성을 통해 새로운 컴포넌트를 생성함
+
+### (실습) Card 컴포넌트 만들기
+
+1. chapter_13 폴더 생성
+2. Card.jsx 컴포넌트 만들고 하위 컴포넌트를 감싸서 카드 형태로 보여주는 컴포넌트
+3. Card 컴포넌트를 사용하여 ProfileCard 컴포넌트 제작
+4. index.js 파일 수정
+5. App을 실행하고 정상 동작 여부 확인
+
+## 14장
+
+### 컨텍스트란 무엇인가?
+
+- 기존의 일반적인 리액트에서는 데이터가 컴포넌트의 props를 통해 부모에서 자식으로 단방향으로 전달되었음
+- 컨텍스트는 리액트 컴포넌트들 사이에서 데이터를 기존의 props를 통해 전달하는 방식 대신 '컴포넌트 트리를 통해 곧바로 컴포넌트에 전달하는 새로운 방식'을 제공함
+- 이 것을 통해 어떤 컴포넌트라도 쉽게 데이터에 접근할 수 있음
+- 컨텍스트를 사용하면 일일이 props로 전달할 필요 없이 그림처럼 데이터를 필요로 하는 컴포넌트에 곧바로 데이터를 전달할 수 있음
+
+### 언제 컨텍스트를 사용해야 할까?
+
+- 여러 컴포넌트에서 자주 필요로 하는 데이터는 로그인 여부, 로그인 정보, UI테마, 현재 선택된 언어 등이 있음
+- props를 통해 데이터를 전달하는 기존 방식은 실제 데이터를 필요로 하는 컴포넌트까지의 깊이가 깊어질수록 복잡해짐
+- 또한 반복적인 코드를 계속해서 작성해주어야 하기 때문에 비효율적이고 가독성이 떨어짐
+- 컨텍스트를 사용하면 이러한 방식을 깔끔하게 개선할 수 있음
+
+### 컨텍스트를 사용하기 전에 고려할 점
+
+- 컨텍스트는 다른 레벨의 많은 컴포넌트가 특정 데이터를 필요로 하는 경우에 주로 사용함
+- 하지만 무조건 컨텍스트를 사용하는 것이 좋은 것은 아님
+- 왜냐하면 컴포넌트와 컨텍스가 연동되면 재사용성이 떨어지게 때문
+- 따라서 다른 레벨의 많은 컴포넌트가 에디터를 필요로 하는 경우가 아니면 props를 통해 데이터를 전달하는 컴포넌트 합성 방법이 더 적함
+
+```js
+function Page(props){
+  const user = props.user;
+
+  const userLink = (
+    <Link href={user.permalink}>
+      <Abvatar user={user} size={props.avatarSiz} />
+    </Link>
+  );
+
+  // Page 컴포넌트는 PageLayout 컴포넌트를 렌더링
+  // 이때 props로 userLink를 함께 전달함
+  return <PageLayout userLink={userLink} />;
+
+  // PageLayout 컴포넌트는 NavigationBar 컴포넌트를 렌더링
+  <PageLayout userLink={...} />
+
+  //NavigationBar 컴포넌트는 props로 전달받은 userLink elemnet를 리턴
+  <NavigationBar userLink={...} />
+}
+```
+
+- 하지만 어떤 경우에는 하나의 데이터에 다양항 레벨에 있는 중복된 컴포넌트들의 접근이 필요할 수 있음
+- 이런 경우라면 컨텍스트가 유리
+- 컨텍스트는 해당 데이터와 데이터의 변경사항을 모두 하위 컴포넌트들에게 broadcast해주기 때문
+- 컨텍스트를 사용하기에 적합한 데이터의 대표적인 예로는 지역 정보, UI테마 그리고 캐싱된 데이터 등이 있음
+
+```js
+function Page(props) {
+  const user = props.user;
+
+  const topBar = (
+    <NavigationBar>
+      <Link href={user.permalink}>
+        <Avatar user={user} size={props.avatarSize} />
+      </Link>
+    </NavigationBar>
+  );
+
+  const content = <Feed user={user} />;
+
+  return <PageLayout topBar={topBar} content={content} />;
+}
+```
+
+### 컨텍스트 API
+
+- 이 절에서는 리액트에서 제공하는 컨텍스트 API를 통해 컨텍스트를 어떻게 사용하는지에 대해 알아보자
+
+#### 1. React.createContext
+
+- 컨텍스트를 생성하기 위한 함수
+- 차라미터에는 기본값을 넣어주면 됨
+- 하위 컴포넌트에는 가장 가까운 상위 레벨의 Provider로 부터 컨텍스트를 받게 되지만 Provider를 찾을 수 없다면 위에서 설정한 기본값을 사용하게 됨
+
+#### 2. Context.Provider
+
+- Context.Provider 컴포넌트로 하위 컴포넌트들을 감싸주면 모든 하위 컴포넌트들이 해당 컨텍스트의 데이터에 접근할 수 있게 됨
+
+```js
+<MyContext.Provider value={/* some value */}>
+```
+
+- Provider 컴포넌트에는 value라는 prop이 있고 이 것을 Provider 컴포넌트 하위에 있는 컴포넌트에게 전달 됨
+- 하위 컴포넌트를 consumer 컴포넌트라고 부름
+
+#### 3. Class.contextType
+
+- Provider 하위에 있는 클래스 컴포넌트에서 컨텍스트의 에디터에 접근하기 위해 사용
+- Class 컴포넌트는 더 이상 사용하지 않으므로 참고만
+
+#### 4. Context.Consumer
+
+- 함수형 컴포넌트에서 Context.Consumer를 사용하여 컨텍스트를 구독할 수 있음
+
+```js
+<MyContext.Consumer>
+  {value => /* 컨텍스트의 값에 따라서 컴포넌트들을 렌더링 */}
+</MyContext.Consumer>
+```
+
+- 컴포넌트의 자식으로 함수가 올 수 있는데 이것을 function as a child라고 부름
+- Context.Consumer로 감싸주면 자식으로 들어간 함수가 현재 컨텍스트의 value를 받아서 리액트 노드로 리턴함
+- 함수로 전달되는 value는 Provider의 value prop과 동일
+
+#### 5. Context.displayName
+
+- 컨텍스트의 객체는 dispalyName이라는 문자열 속성을 가짐
+- 크롬의 리액트 개발자 도구에서는 컨텍스트의 Provider나 Consumer를 표시할 때 displayName을 함께 표시해줌
+
+```js
+const MyContext = React.createContext(/* some value */);
+MyContext.displayName = 'MyDisplayName';
+
+// 개발자 도구에서 "MyDisplayName.Provider"로 표시됨
+<MyContext.Provider></MyContext.Provider>
+
+// 개발자 도구에 "MyDisplayName.Consumer"로 표시됨
+<MyContext.Consumer></MyContext.Consumer>
+```
+
+---
+
 ## GitHub 2023년 5월 11일
 
 ## 12장
@@ -13,25 +277,24 @@
 3. TemperatureInput.jsx에는 사용자가 입력할 입력 폼을 만듬
 
 ##### TemperatureInput.jsx
+
 ```js
 const scaleName = {
   c: "섭씨",
   f: "화씨",
 };
 
-function TemperatureInput(props){
+function TemperatureInput(props) {
   const handleChange = (e) => {
     props.onTemperatureChange(e.target.value);
   };
 
-  return(
+  return (
     <fieldset>
-      <legend>
-        온도를 입력해주세요 (단위: {scaleName[props.scale]});
-      </legend>
-      <input value={props.temperature} onChange={handleChange}/>
+      <legend>온도를 입력해주세요 (단위: {scaleName[props.scale]});</legend>
+      <input value={props.temperature} onChange={handleChange} />
     </fieldset>
-  )
+  );
 }
 
 export default TemperatureInput;
@@ -40,13 +303,14 @@ export default TemperatureInput;
 4. Calculator.jsx에는 사용자가 입력한 숫자를 변형해줄 함수들과 출력 폼 만듬
 
 ##### Calculator.jsx
+
 ```js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import TemperatureInput from "./TemperatureInput";
 
 function BoilingVerdict(props) {
   if (props.celsius >= 100) {
-      return <p>물이 끓습니다.</p>;
+    return <p>물이 끓습니다.</p>;
   }
   return <p>물이 끓지 않습니다.</p>;
 }
@@ -62,7 +326,7 @@ function toFahrenheit(celsius) {
 function tryConvert(temperature, convert) {
   const input = parseFloat(temperature);
   if (Number.isNaN(input)) {
-      return "";
+    return "";
   }
   const output = convert(input);
   const rounded = Math.round(output * 1000) / 1000;
@@ -74,34 +338,34 @@ function Calculator(props) {
   const [scale, setScale] = useState("c");
 
   const handleCelsiusChange = (temperature) => {
-      setTemperature(temperature);
-      setScale("c");
+    setTemperature(temperature);
+    setScale("c");
   };
 
   const handleFahrenheitChange = (temperature) => {
-      setTemperature(temperature);
-      setScale("f");
+    setTemperature(temperature);
+    setScale("f");
   };
 
   const celsius =
-      scale === "f" ? tryConvert(temperature, toCelsius) : temperature;
+    scale === "f" ? tryConvert(temperature, toCelsius) : temperature;
   const fahrenheit =
-      scale === "c" ? tryConvert(temperature, toFahrenheit) : temperature;
+    scale === "c" ? tryConvert(temperature, toFahrenheit) : temperature;
 
   return (
-      <div>
-          <TemperatureInput
-              scale="c"
-              temperature={celsius}
-              onTemperatureChange={handleCelsiusChange}
-          />
-          <TemperatureInput
-              scale="f"
-              temperature={fahrenheit}
-              onTemperatureChange={handleFahrenheitChange}
-          />
-          <BoilingVerdict celsius={parseFloat(celsius)} />
-      </div>
+    <div>
+      <TemperatureInput
+        scale="c"
+        temperature={celsius}
+        onTemperatureChange={handleCelsiusChange}
+      />
+      <TemperatureInput
+        scale="f"
+        temperature={fahrenheit}
+        onTemperatureChange={handleFahrenheitChange}
+      />
+      <BoilingVerdict celsius={parseFloat(celsius)} />
+    </div>
   );
 }
 
@@ -111,14 +375,15 @@ export default Calculator;
 5. index.js 변경
 
 ##### index.js
-```js
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import Calculator from './chapter_12/Calculator';
-import './index.css';
-import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Calculator from "./chapter_12/Calculator";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Calculator />
@@ -126,7 +391,6 @@ root.render(
 );
 
 reportWebVitals();
-
 ```
 
 ---
@@ -147,16 +411,14 @@ reportWebVitals();
 - 다음은 numbers 배열에 들어있는 각각의 요소를 map()함수를 이용하여 하나씩 추출하여 2를 곱한 후 doubled라는 배열에 다시 넣는 코드이다
 
 ```js
-const double = numbers.map((number)=>number*2);
+const double = numbers.map((number) => number * 2);
 ```
 
 - 담은 리액트에서 map()함수를 사용한 예제이다
 
 ```js
 const numbers = [1, 2, 3, 4, 5];
-const listItems = numbers.map((number)=>
-  <li>{number}</li>
-);
+const listItems = numbers.map((number) => <li>{number}</li>);
 ```
 
 - 이 코드는 numbers의 요소에 2를 곱하는 대신 <li> 태그를 결합해서 리턴하고 있음
@@ -171,8 +433,9 @@ ReactDOM.render(
     <li>{4}</li>
     <li>{5}</li>
   </ul>,
-  document,getElementById('root')
-)
+  document,
+  getElementById("root")
+);
 ```
 
 ### 기본적인 리스트 컴포넌트
@@ -180,29 +443,24 @@ ReactDOM.render(
 - 앞서 작성한 코드를 별도의 컴포넌트로 분리하면 다음과 같음
 
 ```js
-function NumberList(props){
-  const {numbers} = props;
+function NumberList(props) {
+  const { numbers } = props;
 
-  const listItems = numbers.map((number)=>
-    <li>{number}</li>
-  );
+  const listItems = numbers.map((number) => <li>{number}</li>);
 
-  return(
-    <ul>{listItems}</ul>
-  );
+  return <ul>{listItems}</ul>;
 }
 
 const numbers = [1, 2, 3, 4, 5];
 ReactDOM.render(
   <NumberList numbers={number} />,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 ```
 
 - 이 컴포넌트는 props로 숫자를 numbers로 받아 리스트로 랜더링 함
 - 이 코드를 실행하면 "리스트에 아이템에 무조건 키가 있어야함"라는 경고 문구가 나옴
 - 경고 문구가 나오는 이유는 각각의 아이템에 key props가 없기 때문
-
 
 ### 리스트의 키에 대해 알아보기
 
@@ -219,10 +477,11 @@ ReactDOM.render(
 5. 다음과 같이 각 학생 객채에 고유한 값을 가진 id를 추가해주고, map()함수의 엘리먼트에 key = {student.id}를 넣어줌
 
 ##### index.js
-```js
-import SignUp from './chapter_10/LandingPage'; // 추가
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+```js
+import SignUp from "./chapter_10/LandingPage"; // 추가
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <LandingPage /> // 변경
@@ -231,33 +490,34 @@ root.render(
 ```
 
 ##### AttendanceBook.jsx
+
 ```js
-import React from 'react';
+import React from "react";
 
 const students = [
   {
     id: 1, // 고유 key가 될 id값
-    name : "Inje",
+    name: "Inje",
   },
   {
     id: 2,
-    name : "Steve",
+    name: "Steve",
   },
   {
     id: 3,
-    name : "Bill",
+    name: "Bill",
   },
   {
     id: 4,
-    name : "Jeff",
+    name: "Jeff",
   },
-]
+];
 
 const AttendanceBook = () => {
   return (
     <div>
       {students.map((student) => {
-        return <li key={student.id}>{student.name}</li>
+        return <li key={student.id}>{student.name}</li>;
       })}
     </div>
   );
@@ -291,9 +551,11 @@ export default AttendanceBook;
 #### 다양한 키값의 사용법
 
 - 숫자 값을 사용
+
   - 배열에 중복된 숫자가 들어있다면 키값도 중복되기 때문에 고유해야 한다는 키값의 조건이 충족되지 않음
 
 - id를 사용
+
   - id의 의미 자체가 고유한 값이므로 키값으로 사용하기 적합
   - id가 있는 경우에는 보통 id값을 키값으로 사용
 
@@ -326,28 +588,27 @@ export default AttendanceBook;
 - 다음 코드는 사용자의 이름을 입력 받는 HTML폼을 리액트 제어 컴포넌트로 만든 것임
 
 ```js
-function NameForm(props){
+function NameForm(props) {
   const [value, setValue] = useState("");
 
   const handleChange = (event) => {
     setValue(event.target.value);
-  }
+  };
 
   const handleSubmit = (event) => {
     alert("입력한 이름 :" + value);
     event.preventDefault();
-  }
+  };
 
-  return(
+  return (
     <form onSubmit={handleSubmit}>
       <label>
         이름 :
-        <input type = "text" value={value} onChange={handleChange} />
+        <input type="text" value={value} onChange={handleChange} />
       </label>
-      <button type='submit'>제출</button>
+      <button type="submit">제출</button>
     </form>
-  )
-
+  );
 }
 
 export default NameForm;
@@ -358,35 +619,33 @@ export default NameForm;
 - HTML에서는 `<textarea>`의 children으로 텍스트가 들어가는 형태임
 
 ```js
-<textarea>
-  안녕하세요, 여기에 이렇게 텍스트가 들어가게 됨
-</textarea>
+<textarea>안녕하세요, 여기에 이렇게 텍스트가 들어가게 됨</textarea>
 ```
 
 - 리액트에서는 state를 통해 태그의 value라는 attribute를 변경하여 텍스트를 표시함
 
 ```js
-function RequestForm(props){
+function RequestForm(props) {
   const [value, setValue] = useState("");
 
   const handleChange = (event) => {
     setValue(event.target.value);
-  }
+  };
 
   const handleSubmit = (event) => {
     alert("입력한 요청사항 :" + value);
     event.preventDefault();
-  }
+  };
 
-  return(
+  return (
     <form onSubmit={handleSubmit}>
       <label>
         이름 :
         <textarea value={value} onChange={handleChange} />
       </label>
-      <button type='submit'>제출</button>
+      <button type="submit">제출</button>
     </form>
-  )
+  );
 }
 
 export default RequestForm;
@@ -398,40 +657,40 @@ export default RequestForm;
 
 ```js
 <select>
-  <option value = "apple">사과</option>
-  <option value = "banana">바나나</option>
-  <option value = "grape">포도</option>
-  <option value = "watermelon">수박</option>
+  <option value="apple">사과</option>
+  <option value="banana">바나나</option>
+  <option value="grape">포도</option>
+  <option value="watermelon">수박</option>
 </select>
 ```
 
 ```js
-function FruitSelect(props){
+function FruitSelect(props) {
   const [value, setValue] = useState("");
 
   const handleChange = (event) => {
     setValue(event.target.value);
-  }
+  };
 
   const handleSubmit = (event) => {
     alert("선택한 과일 :" + value);
     event.preventDefault();
-  }
+  };
 
-  return(
+  return (
     <form onSubmit={handleSubmit}>
       <label>
         과일을 선택하세요 :
         <select value={value} onChange={handleChange}>
-          <option value = "apple">사과</option>
-          <option value = "banana">바나나</option>
-          <option value = "grape">포도</option>
-          <option value = "watermelon">수박</option>
+          <option value="apple">사과</option>
+          <option value="banana">바나나</option>
+          <option value="grape">포도</option>
+          <option value="watermelon">수박</option>
         </select>
       </label>
-      <button type='submit'>제출</button>
+      <button type="submit">제출</button>
     </form>
-  )
+  );
 }
 
 export default FruitSelect;
@@ -442,29 +701,29 @@ export default FruitSelect;
 - File input 태그는 그 값이 읽기 전용이기 때문에 리액트에서는 비제어 컴포넌트가 됨
 
 ```js
-<input type = "file" />
+<input type="file" />
 ```
 
 ### 여러 개의 입력 다루기
 
 ```js
-function Reservation(props){
+function Reservation(props) {
   const [haveBreakfast, setHaveBreakfast] = useState(true);
   const [numberOfGuest, setNumberOfGuest] = useState(2);
 
   const handleSubmit = (event) => {
     alert(`아침식사 여부 : ${haveBreakfast}, 방문객 수 ${numberOfGuest}`);
     event.preventDefault();
-  }
+  };
 
-  return(
+  return (
     <form onSubmit={handleSubmit}>
       <label>
         아침식사 여부:
         <input
-          type = "checkbox"
-          checked = {haveBreakfast}
-          onChange = {(evnet) => {
+          type="checkbox"
+          checked={haveBreakfast}
+          onChange={(evnet) => {
             setHaveBreakfast(evnet.target.checked);
           }}
         />
@@ -473,16 +732,16 @@ function Reservation(props){
       <label>
         방문객 수:
         <input
-          type = "number"
-          value = {numberOfGuest}
-          onChange = {(evnet) => {
-            setNumberOfGuest(evnet.target.value)
+          type="number"
+          value={numberOfGuest}
+          onChange={(evnet) => {
+            setNumberOfGuest(evnet.target.value);
           }}
         />
       </label>
-      <button onSubmit = {handleSubmit}>제출</button>
+      <button onSubmit={handleSubmit}>제출</button>
     </form>
-  )
+  );
 }
 
 export default Reservation;
@@ -494,20 +753,21 @@ export default Reservation;
 - 만약 value prop은 넣되 자유롭게 입력할 수 있게 만들고 싶다면 값이 undefined 또는 null을 넣어주면 됨
 
 ```js
-ReactDOM.render(<inpurt value = "jil" />, rootNode);
+ReactDOM.render(<inpurt value="jil" />, rootNode);
 
-setTimeout(function(){
-  ReactDOM.render(<input value = {null} />, rootNode);
+setTimeout(function () {
+  ReactDOM.render(<input value={null} />, rootNode);
 }, 1000);
 ```
 
 ### (실습) 사용자 정보 입력받기
 
 ##### index.js
-```js
-import SignUp from './chapter_11/SignUp'; // 추가
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+```js
+import SignUp from "./chapter_11/SignUp"; // 추가
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <SignUp /> // 변경
@@ -516,8 +776,9 @@ root.render(
 ```
 
 ##### SignUp.jsx
+
 ```js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const SignUp = (props) => {
   const [name, setName] = useState("");
@@ -534,16 +795,12 @@ const SignUp = (props) => {
   const handleSubmit = (e) => {
     alert(`이름 : ${name}, 성별 : ${gender}`);
     e.preventDefault();
-  }
+  };
   return (
     <form onSubmit={handleSubmit}>
       <label>
         이름 :
-        <input
-          type="text"
-          value={name}
-          onChange={handleChangeName}
-        />
+        <input type="text" value={name} onChange={handleChangeName} />
       </label>
       <br />
       <label>
@@ -553,7 +810,7 @@ const SignUp = (props) => {
           <option value="여자">여자</option>
         </select>
       </label>
-      <button type='submit'>제출</button>
+      <button type="submit">제출</button>
     </form>
   );
 };
@@ -612,69 +869,70 @@ export default SignUp;
 ### 하위컴포넌트에서 State 공유하기
 
 ##### Calculator.jsx
+
 ```js
-import React from 'react';
+import React from "react";
 import TemperatureInput from "./TemperatureInput";
 
 function BoilingVerdict(props) {
-    if (props.celsius >= 100) {
-        return <p>물이 끓습니다.</p>;
-    }
-    return <p>물이 끓지 않습니다.</p>;
+  if (props.celsius >= 100) {
+    return <p>물이 끓습니다.</p>;
+  }
+  return <p>물이 끓지 않습니다.</p>;
 }
 
 function toCelsius(fahrenheit) {
-    return ((fahrenheit - 32) * 5) / 9;
+  return ((fahrenheit - 32) * 5) / 9;
 }
 
 function toFahrenheit(celsius) {
-    return (celsius * 9) / 5 + 32;
+  return (celsius * 9) / 5 + 32;
 }
 
 function tryConvert(temperature, convert) {
-    const input = parseFloat(temperature);
-    if (Number.isNaN(input)) {
-        return "";
-    }
-    const output = convert(input);
-    const rounded = Math.round(output * 1000) / 1000;
-    return rounded.toString();
+  const input = parseFloat(temperature);
+  if (Number.isNaN(input)) {
+    return "";
+  }
+  const output = convert(input);
+  const rounded = Math.round(output * 1000) / 1000;
+  return rounded.toString();
 }
 
 function Calculator(props) {
-    const [temperature, setTemperature] = useState("");
-    const [scale, setScale] = useState("c");
+  const [temperature, setTemperature] = useState("");
+  const [scale, setScale] = useState("c");
 
-    const handleCelsiusChange = (temperature) => {
-        setTemperature(temperature);
-        setScale("c");
-    };
+  const handleCelsiusChange = (temperature) => {
+    setTemperature(temperature);
+    setScale("c");
+  };
 
-    const handleFahrenheitChange = (temperature) => {
-        setTemperature(temperature);
-        setScale("f");
-    };
+  const handleFahrenheitChange = (temperature) => {
+    setTemperature(temperature);
+    setScale("f");
+  };
 
-    const celsius =
-        scale === "f" ? tryConvert(temperature, toCelsius) : temperature;
-    const fahrenheit =
-        scale === "c" ? tryConvert(temperature, toFahrenheit) : temperature;
+  const celsius =
+    scale === "f" ? tryConvert(temperature, toCelsius) : temperature;
+  const fahrenheit =
+    scale === "c" ? tryConvert(temperature, toFahrenheit) : temperature;
 
-    return (
-        <div>
-            <TemperatureInput
-                scale="c"
-                temperature={celsius}
-                onTemperatureChange={handleCelsiusChange}
-            />
-            <TemperatureInput
-                scale="f"
-                temperature={fahrenheit}
-                onTemperatureChange={handleFahrenheitChange}
-            />
-            <BoilingVerdict celsius={parseFloat(celsius)} />
-        </div>
-    );
+  return (
+    <div>
+      <TemperatureInput
+        scale="c"
+        temperature={celsius}
+        onTemperatureChange={handleCelsiusChange}
+      />
+      <TemperatureInput
+        scale="f"
+        temperature={fahrenheit}
+        onTemperatureChange={handleFahrenheitChange}
+      />
+      <BoilingVerdict celsius={parseFloat(celsius)} />
+    </div>
+  );
 }
 
 export default Calculator;
@@ -691,20 +949,17 @@ export default Calculator;
 - DOM에서 클릭 이벤트를 처리하는 예제 코드
 
 ```js
-<button onclick = "activate()">
-  Activate
-</button>
+<button onclick="activate()">Activate</button>
 ```
 
 - React에서 클릭 이벤트 처리하는 예제 코드
-  
+
 ```js
-<button onClick = {activate}>
-  Activate
-</button>
+<button onClick={activate}>Activate</button>
 ```
 
 #### 둘의 차이점
+
 1. 이벤트 이름이 onclick에서 onClick으로 변경(Camel case)
 2. 전달하려는 함수는 문자열에서 함수 그대로 전달
 
@@ -717,54 +972,51 @@ export default Calculator;
 - bind를 사용하지 않으면 this.handleClick은 글로벌 스코프에서 호출되어, undefined로 사용할 수 없기 때문
 - bind를 사용하지 않으려면 화살표 함수를 사용하는 방법도 있음
 - 하지만 클래스 컴포넌트는 이제 거의 사용하지 않기 때문에 이 내용은 참고만 하기
-  
+
   ```js
-  class Toggle extends React.Componet{
-    constructor(props){
+  class Toggle extends React.Componet {
+    constructor(props) {
       super(props);
 
-      this.state = {isToggleOn: true};
+      this.state = { isToggleOn: true };
 
       // callback에서 `this`를 사용하기 위해서는 바인딩을 필수적으로 해야함
       this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick(){
-      this.setState(prevState => ({
-        isToggleOn: !prevState.isToggleOn
+    handleClick() {
+      this.setState((prevState) => ({
+        isToggleOn: !prevState.isToggleOn,
       }));
     }
 
     render() {
-      return(
+      return (
         <button onClick={this.handleClick}>
-          {this.state.isToggleOn ? '켜짐' : '꺼짐'}
+          {this.state.isToggleOn ? "켜짐" : "꺼짐"}
         </button>
       );
     }
   }
   ```
+
 - 클래스형을 함수형으로 바꾸면 다음 코드와 같음
 
 ```js
-function Toggle(props){
+function Toggle(props) {
   const [isToggleOn, setIsToggleOn] = useState(true);
 
   // 방법 1. 함수 안에 함수로 정의
-  function handleClick(){
+  function handleClick() {
     setIsToggleOn((isToggleOn) => !isToggleOn);
   }
 
   // 방법 2. arrow function을  사용하여 정의
   const handleClick = () => {
     setIsToggleOn((isToggleOn) => !isToggleOn);
-  }
+  };
 
-  return(
-    <button onClick = {handleClick}>
-      {isToggleOn ? "켜짐" : "꺼짐"}
-    </button>
-  )
+  return <button onClick={handleClick}>{isToggleOn ? "켜짐" : "꺼짐"}</button>;
 }
 ```
 
@@ -793,57 +1045,54 @@ function Toggle(props){
 3. 함수 컴포넌트로 변경하기
 
 #### 클래스 필드
-```js
-import React from"react";
 
-class ConfirmButton extends React.Component{
-  constructor(props){
+```js
+import React from "react";
+
+class ConfirmButton extends React.Component {
+  constructor(props) {
     super(props);
 
     this.state = {
       isConfirmed: false,
     };
-    
+
     this.handleConfirm = this.handleConfirm.bind(this);
   }
 
-  handleConfirm(){
+  handleConfirm() {
     this.setState((prevState) => ({
       insConfirmed: !preState.isConfirmed,
     }));
   }
 
-  render(){
-    return(
-      <button
-        onClick={this.handleConfirm}
-        disabled={this.state.isConfirmed}
-      >
+  render() {
+    return (
+      <button onClick={this.handleConfirm} disabled={this.state.isConfirmed}>
         {this.state.isConfirmed ? "확인 됨" : "확인하기"}
       </button>
-    )
+    );
   }
 }
 ```
-#### 함수형 컴포넌트
-```js
-import React,{useState} from "react";
 
-function ConfirmedButton(props){
+#### 함수형 컴포넌트
+
+```js
+import React, { useState } from "react";
+
+function ConfirmedButton(props) {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   const handleConfirm = () => {
     setIsConfirmed((prevIsConfirmed) => !prevIsConfirmed);
   };
 
-  return(
-    <button
-      onClick = {handleConfirm}
-      disabled = {isConfirmed}
-    >
+  return (
+    <button onClick={handleConfirm} disabled={isConfirmed}>
       {isConfirmed ? "확인 됨" : "확인하기"}
     </button>
-  )
+  );
 }
 ```
 
@@ -859,10 +1108,12 @@ function ConfirmedButton(props){
   - 이벤트의 이름을 모두 소문자로
   - 이벤트를 처리할 함수를 문자열로 전달
 - 리액트의 이벤트
+
   - 이벤트의 이름을 카멜 표기법으로 표기
   - 이벤트를 처리할 함수를 그대로 전달
 
 - 이벤트 핸들러
+
   - 이벤트가 발생했을 때 해당 이벤트를 처리하는 함수
   - 이벤트 리스너 라고도 함
   - 클래스 컴포넌트
@@ -887,7 +1138,7 @@ function ConfirmedButton(props){
 ### 조건부 렌더링이란?
 
 - 여기서 조건이란 우리가 알고있는 조건문의 조건임
-  
+
 ```js
 function Greeting(props){
   const isLoggedIn = props.isLoggedIn;
@@ -908,18 +1159,18 @@ function Greeting(props){
 
 ```js
 let button;
-if(isLoggendIn){
-  button = <LogutButton onClick = {handleLogutClick} />;
-}else{
-  button = <LogutButton onClick = {handleLoginClock} />;
+if (isLoggendIn) {
+  button = <LogutButton onClick={handleLogutClick} />;
+} else {
+  button = <LogutButton onClick={handleLoginClock} />;
 }
 
-return(
+return (
   <div>
-    <Greeting isLoggedIn = {isLoggedIn} />
+    <Greeting isLoggedIn={isLoggedIn} />
     {button}
   </div>
-)
+);
 ```
 
 ### 인라인 조건
@@ -930,22 +1181,24 @@ return(
   - if문을 직접 사용하지 않고, 동일한 효과를 내기 위해 &&논리 연산자를 사용
   - && 또는 and연산자로 모든 조건이 참일때만 참이 됨
   - 첫 번째 조건이 거짓이면 두 번쨰 조건은 판단할 필요가 없음
+
 ```js
 //true && expression -> expression
 // false && expression -> false
 
-{unreadMessages.length > 0 &&
-  <h2>
-    현재 {unreadMessages.length}개의 읽지 않은 메시지가 있습니다.
-  </h2>
+{
+  unreadMessages.length > 0 && (
+    <h2>현재 {unreadMessages.length}개의 읽지 않은 메시지가 있습니다.</h2>
+  );
 }
 ```
-| A | B | Result |
-| - | - | - |
-| T | T | T |
-| T | F | F |
-| F | T | F |
-| F | F | F |
+
+| A   | B   | Result |
+| --- | --- | ------ |
+| T   | T   | T      |
+| T   | F   | F      |
+| F   | T   | F      |
+| F   | F   | F      |
 
 - 인라인 if...else
   - 삼항 연산자를 사용
@@ -973,23 +1226,19 @@ function UserStatus(props){
 - 컴포넌트 렌더링을 하고싶지 않을 때에는 null을 리턴 함
 
 ```js
-function WarningBanner(propr){
-  if(!props.warning){
+function WarningBanner(propr) {
+  if (!props.warning) {
     return null;
   }
 
-  return(
-    <div>
-      경고!
-    </div>
-  )
+  return <div>경고!</div>;
 }
 ```
 
 ### (실습) 로그인 여부를 나타내는 툴바 만들기
 
-
 #### index.js
+
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -1013,55 +1262,57 @@ reportWebVitals();
 ```
 
 #### LandingPage.jsx
-```js
-import React from 'react';
-import { useState } from 'react';
-import Toolbar from './Toolbar';
 
-function LandingPage(props){
+```js
+import React from "react";
+import { useState } from "react";
+import Toolbar from "./Toolbar";
+
+function LandingPage(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const onClickLogin = () => {
     setIsLoggedIn(true);
-  }
+  };
 
-  const onClickLogout = () =>{
+  const onClickLogout = () => {
     setIsLoggedIn(false);
-  }
+  };
 
   return (
     <div>
       <Toolbar
-        isLoggedIn = {isLoggedIn}
-        onClickLogin = {onClickLogin}
-        onClickLogout = {onClickLogout}
+        isLoggedIn={isLoggedIn}
+        onClickLogin={onClickLogin}
+        onClickLogout={onClickLogout}
       />
-      <div style={{padding : 16}}>소플과 함께하는 리액트 공부!</div>
+      <div style={{ padding: 16 }}>소플과 함께하는 리액트 공부!</div>
     </div>
   );
-};
+}
 
 export default LandingPage;
 ```
 
 #### Toolbar.jsx
+
 ```js
-import React from 'react';
+import React from "react";
 
 const styles = {
-  wrapper : {
-    padding : 16,
-    display : "flex",
+  wrapper: {
+    padding: 16,
+    display: "flex",
     flexDirection: "row",
     borderBottom: "1px solid grey",
   },
   greeting: {
     marginRight: 8,
   },
-}
+};
 
 const Toolbar = (props) => {
-  const {isLoggedIn, onClickLogin, onClickLogout} = props;
+  const { isLoggedIn, onClickLogin, onClickLogout } = props;
 
   return (
     <div style={styles.wrapper}>
@@ -1081,12 +1332,15 @@ export default Toolbar;
 ### 9장 요약
 
 - 조건부 렌더링
+
   - 조건에 따라 렌더링 결과가 달리지도록 하는 것
 
 - 엘리먼트 변수
+
   - 리액트 엘리먼트를 변수처럼 저장해서 사용하는 방법
 
 - 인라인 조건
+
   - 조건문을 코드 안에 집어넣는 것
   - 인라인 if
     - if문을 필요한 곳에 직접 집어넣어서 사용하는 방법
@@ -1098,10 +1352,12 @@ export default Toolbar;
     - 앞에 나오는 조건문이 true면 첫 번째 항목을 리턴, false면 두 번째 항목을 리턴
     - 조건에 따라 각기 다른 엘리먼트를 렌더링하고 싶을 때 사용
 
-- 컴포넌트 렌더링 막기 
+- 컴포넌트 렌더링 막기
   - 리액트에서 null을 리턴하면 렌더링되지 않음
   - 특정 컴포넌트를 렌더링하고 싶지 않을 경우 null을 리턴하면 됨
+
 ---
+
 ## 10장 리스트와 키란 무엇인가
 
 ### 리스트
@@ -1116,12 +1372,15 @@ export default Toolbar;
 - 프로그래밍에서 key는 각 객체나 아이템을 구분할 수 있는 고유값을 의미
 
 ---
+
 ## GitHub 2023년 4월 13일
+
 ### 6장 요약
 
 ### State
 
 #### State란?
+
 - 리액트 컴포넌트의 변경 가능한 데이터
 - 컴포넌트를 개발하는 개발자가 직접 정의해서 사용
 - State가 변경될 경우 컴포넌트가 재랜더링 됨
@@ -1252,21 +1511,21 @@ funciont Counter(prots){
 - componentWillUnmount()와 동일한 기능은 어떻게 구현하는지 알아보자
 
 ```js
-function IserStatusWithCounter(props){
+function IserStatusWithCounter(props) {
   const [count, setCount] = useState(0);
-  useEffect(()=>{
+  useEffect(() => {
     document.title = `총${count}번 클릭했습니다.`;
   });
 
   const [isOnline, setIsOnline] = useState(null);
-  useEffect(()=>{
+  useEffect(() => {
     ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
-      return () => {
-        ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
-      };
+    return () => {
+      ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+    };
   });
 
-  function handleStatusChage(status){
+  function handleStatusChage(status) {
     setIsOnline(status.isOnline);
   }
 }
@@ -1308,12 +1567,10 @@ const memoizedValue = useMemo(
 
 - 메모이제이션(memoization)은 컴퓨터 프로그램이 동일한 계산을 반복해야 할 때 이전에 계싼한 값을 메모리에 저장함으로써 동일한 계산의 반복 수행을 제거하여 프로그램 실행속도를 빠르게 하는 기술임
 - 동적 계획법의 핵심이 되는 기술임
-- 다음 코드와 같이 의존성 배열을 넣지 않을 경우 렌더링이 일어날 때마다 매번 함수가  실행됨
+- 다음 코드와 같이 의존성 배열을 넣지 않을 경우 렌더링이 일어날 때마다 매번 함수가 실행됨
 
 ```js
-const memoizedValue = useMemo(
-  ()=> computeExpensiveValue(a, b)
-);
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b));
 ```
 
 - 따라서 의존성 배열을 넣지 않은 것은 의미 없음
@@ -1366,46 +1623,46 @@ const refContainer = useRef(초깃값);
 - 예제 UserStatus컴포넌트는 isOnline이라는 state에 따라서 사용자의 상태가 온라인인지 아닌지를 텍스트로 보여주는 커포넌트임
 
 #### UserStatus
+
 ```js
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
-function UserStatus(props){
-
+function UserStatus(props) {
   const [isOnline, setIsOnline] = useState(null);
 
-  useEffect(()=>{
-    function handleStatusChage(status){
+  useEffect(() => {
+    function handleStatusChage(status) {
       setIsOnline(status.isOnline);
     }
 
     ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
-      return () => {
-        ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
-      };
-  })
+    return () => {
+      ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+    };
+  });
 
-  if(isOnline === null){
+  if (isOnline === null) {
     return "대기중...";
   }
-  return isOnline ? "온라인" : "오프라인"
+  return isOnline ? "온라인" : "오프라인";
 }
 ```
 
 - 다음 예는 연락처 목록을 제공하면서 사용자의 이름은 초록색으로 표시하는 UserListItem 컴포넌트임
 
 ```js
-function UserListItem(props){
+function UserListItem(props) {
   const [isOnline, setIsOnline] = useState(null);
 
-  useEffect(()=>{
-    function handleStatusChage(status){
+  useEffect(() => {
+    function handleStatusChage(status) {
       setIsOnline(status.isOnline);
     }
 
     ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
-      return () => {
-        ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
-      };
+    return () => {
+      ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+    };
   });
 }
 ```
@@ -1421,20 +1678,20 @@ function UserListItem(props){
 - 아래 코드는 중복되는 로직을 useUserStatus()라는 커스텀 훅으로 추출해낸 것임
 
 ```js
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 
-function useUserStatus(userId){
+function useUserStatus(userId) {
   const [isOnline, setIsOnline] = useState(null);
 
-  useEffect(()=>{
-    function handleStatusChage(status){
+  useEffect(() => {
+    function handleStatusChage(status) {
       setIsOnline(status.isOnline);
     }
 
     ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
-      return () => {
-        ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
-      };
+    return () => {
+      ServierAPI.subscribeUserStatus(props.user.id, handleStatusChange);
+    };
   });
 
   return isOnline;
@@ -1446,19 +1703,19 @@ function useUserStatus(userId){
 - 먼저 작성했던 코드를 사용자 훅을 사용해서 수정하면 다음과 같음
 
 ```js
-function UserStatus(props){
+function UserStatus(props) {
   const isOnline = useSuerStatus(props.uer.id);
 
-  if(isOnline === null){
+  if (isOnline === null) {
     return "대기중...";
   }
-  return isOnline ? "온라인":"오프라인";
+  return isOnline ? "온라인" : "오프라인";
 }
 
-function userListItem(props){
+function userListItem(props) {
   return (
-    <li style = {{color : isOnline ? "green" : "black"}}>{props.user.name}</li>
-  )
+    <li style={{ color: isOnline ? "green" : "black" }}>{props.user.name}</li>
+  );
 }
 ```
 
