@@ -2,6 +2,70 @@
 
 ## 대림대학교 컴퓨터정보학부 3학년 1반 리엑트 수업
 
+## GitHub 2023년 6월 1일
+
+### styled-components
+
+- styled-components는 CSS문법을 그대로 사용하면서 결과물을 스타일된 컴포넌트 형태로 만들어주는 오픈소스 라이브러리임
+- 컴포넌트 개념을 사용하기 때문에 리액트와 굉장히 궁합이 잘 맞으면서 세계적으로 리액트 개발에 많이 사용됨
+
+### styled-components 설치하기
+
+- npm을 사용하는 경우
+- npm install --save styled-components
+- yarn을 사용하는 경우
+- yarn add styled-components
+
+### styled-components 사용해보기
+
+1. chapter_15폴더 생성
+2. MainPage.jsx파일 생성
+
+```js
+import React from "react";
+import styled from "styled-components";
+
+const Wrapper = styled.div`
+  padding: 1em;
+  background: red;
+`;
+
+const Title = styled.h1`
+  font-size: 1.5em;
+  color: white;
+  text-align: center;
+`;
+
+function MainPage() {
+  return (
+    <div>
+      <Wrapper>
+        <Title>안녕. 리액트!</Title>
+      </Wrapper>
+    </div>
+  );
+}
+
+export default MainPage;
+```
+
+3. App.js파일 수정
+
+```js
+import "./App.css";
+import MainPage from "./chapter_15/MainPage";
+
+function App() {
+  return (
+    <div className="App">
+      <MainPage />
+    </div>
+  );
+}
+
+export default App;
+```
+
 ## GitHub 2023년 5월 25일
 
 ### 여러 개의 컨텍스트 사용하기
