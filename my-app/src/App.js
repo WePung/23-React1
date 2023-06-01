@@ -1,10 +1,10 @@
 import "./App.css";
-import DarkOrLight from "./chapter_14/DarkOrLight";
+import Blacks from "./chapter_15/Blacks";
 
 function App() {
   return (
     <div className="App">
-      <DarkOrLight />
+      <Blacks />
     </div>
   );
 }
