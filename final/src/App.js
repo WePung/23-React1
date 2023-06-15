@@ -12,7 +12,7 @@ function App() {
     // 입력 받을 때 마다 color가 변경되어 반영됨
     <div className="App" style={{ background: `${color}` }}>
       <div className="wrapper">
-        <label>Background Color : </label>
+        <label>Background Color : {color}</label>
         <input
           onChange={(e) => {
             onChangeColor(e);
